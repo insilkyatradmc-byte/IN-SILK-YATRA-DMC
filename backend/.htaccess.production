@@ -1,0 +1,43 @@
+# ====================================
+# Backend Root .htaccess
+# Place this in: public_html/api/.htaccess
+# ====================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Redirect all requests to public folder
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# ====================================
+# Security
+# ====================================
+<IfModule mod_headers.c>
+    # Remove PHP version from headers
+    Header unset X-Powered-By
+    
+    # Prevent access to .env file
+    <FilesMatch "^\.env">
+        Order allow,deny
+        Deny from all
+    </FilesMatch>
+</IfModule>
+
+# ====================================
+# Disable Directory Browsing
+# ====================================
+Options -Indexes
+
+# ====================================
+# Protect sensitive files
+# ====================================
+<FilesMatch "(^#.*#|\.(bak|conf|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch>

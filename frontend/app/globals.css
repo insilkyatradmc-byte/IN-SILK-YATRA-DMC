@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --foreground-rgb: 0, 0, 0;
+    --background-start-rgb: 214, 219, 220;
+    --background-end-rgb: 255, 255, 255;
+    
+    /* Lumina Component Variables */
+    --font-mono: "PPSupplyMono", monospace;
+    --font-sans: "PP Neue Montreal", sans-serif;
+    --font-display: "Cormorant Garamond", serif;
+    --color-bg: #0a0a0a;
+    --color-text: #ffffff;
+    --color-text-muted: rgba(255, 255, 255, 0.7);
+    --color-text-light: rgba(255, 255, 255, 0.5);
+    --color-accent: #d4af37;
+    --font-size-mono: clamp(10px, 1.2vw, 12px);
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    
+    /* Testimonial Component Variables - Dark Mode */
+    --testimonial-background: 10 10 10;
+    --testimonial-foreground: 245 245 245;
+    --testimonial-muted: 156 163 175;
+    --testimonial-accent: 251 146 60;
+    --testimonial-border: 38 38 38;
+  }
+}
+
+/* Custom fonts fallback if not loaded */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+
+/* Set all headings to use serif font (marquee style) */
+h1, h2, h3, h4, h5, h6 {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #fafafa;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  /* Hide scrollbar but keep functionality */
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  /* Performance optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Inquiry Form Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s ease-out;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.font-serif {
+  font-family: var(--font-cormorant), serif;
+}
+
+.font-sans {
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.font-handwritten {
+  font-family: var(--font-dancing-script), cursive;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Performance optimizations */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrolling and prevent layout shift */
+html {
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prevent body from shifting when overflow is toggled */
+body.menu-open {
+  overflow: hidden;
+  padding-right: 0 !important;
+}
+
+/* Optimize transitions */
+a, button {
+  transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  /* Use GPU acceleration for transforms */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Prevent layout shift */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Optimize hover states */
+@media (hover: hover) {
+  a:hover, button:hover {
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+}
+
+/* Performance optimizations for animations */
+@media (prefers-reduced-motion: no-preference) {
+  * {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* GPU acceleration for frequently animated elements */
+.animate-spin,
+.animate-pulse,
+[class*="motion-"] {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+@import './lumina.css';

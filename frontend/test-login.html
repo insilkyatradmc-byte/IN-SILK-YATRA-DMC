@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Admin Login</title>
+</head>
+<body>
+    <h1>Test Admin Login API</h1>
+    <button onclick="testLogin()">Test Login</button>
+    <pre id="result"></pre>
+
+    <script>
+        async function testLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testing login...\n';
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@insilkyatra.com',
+                        password: 'insilkyatradmc'
+                    })
+                });
+                
+                const data = await response.json();
+                resultDiv.textContent += 'Response Status: ' + response.status + '\n';
+                resultDiv.textContent += 'Response Data:\n' + JSON.stringify(data, null, 2);
+                
+                if (data.success && data.token) {
+                    resultDiv.textContent += '\n\n✅ LOGIN SUCCESS!\n';
+                    resultDiv.textContent += 'Token: ' + data.token;
+                } else {
+                    resultDiv.textContent += '\n\n❌ LOGIN FAILED!';
+                }
+            } catch (error) {
+                resultDiv.textContent += '\n\n❌ ERROR:\n' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
