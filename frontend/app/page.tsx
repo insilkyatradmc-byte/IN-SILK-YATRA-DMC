@@ -13,7 +13,7 @@ const CinematicTransition = dynamic(() => import('@/components/home/CinematicTra
 const BoutiqueSilkRoadHotelsSection = dynamic(() => import('@/components/home/BoutiqueSilkRoadHotelsSection'), {
   loading: () => <div className="min-h-screen bg-black" />
 })
-const ImmersiveVideoSection = dynamic(() => import('@/components/home/ImmersiveVideoSection'), {
+const LuminaSection = dynamic(() => import('@/components/ui/lumina-interactive-list').then(mod => mod.Component), {
   loading: () => <div className="min-h-screen bg-black" />
 })
 const Testimonials = dynamic(() => import('@/components/home/Testimonials'), {
@@ -27,7 +27,7 @@ export default function Home() {
       <PhilosophySection />
       <CinematicTransition />
       <BoutiqueSilkRoadHotelsSection />
-      <ImmersiveVideoSection />
+      <LuminaSection />
       <Testimonials />
     </div>
   )

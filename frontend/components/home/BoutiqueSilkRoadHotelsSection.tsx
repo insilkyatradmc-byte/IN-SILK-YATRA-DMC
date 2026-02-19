@@ -134,13 +134,7 @@ export default function BoutiqueSilkRoadHotelsSection() {
         </div>
       </div>
 
-      {/* Navigation Instructions */}
-      <div className="absolute bottom-10 left-0 right-0 text-center font-mono uppercase text-[11px] font-semibold text-white/70">
-        <p>Scroll to explore {boutiqueSilkRoadImages.length} curated hotels</p>
-        <p className="opacity-60 mt-1">
-          {scrollProgress < 100 ? 'Continue scrolling to view all hotels' : 'Scroll down to continue exploring'}
-        </p>
-      </div>
+      {/* Navigation Instructions removed */}
     </section>
   );
 }
