@@ -235,4 +235,157 @@ export default function AdminLeadDetailPage() {
                         <span>, {lead.children_count} Child{lead.children_count > 1 ? 'ren' : ''}</span>
                       )}
                     </p>
-```
+                    {lead.children_ages && lead.children_ages.length > 0 && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Children ages: {lead.children_ages.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {(lead.budget_amount && lead.budget_currency) && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Budget</label>
+                    <p className="text-gray-900">{lead.budget_currency} {lead.budget_amount.toLocaleString()}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Preferences */}
+          {(lead.travel_vibes?.length || lead.special_occasions?.length || lead.accommodation_type || lead.private_tour_themes?.length || lead.experience_styles?.length || lead.concierge_interests?.length || lead.transfers_drivers?.length) && (
+            <div>
+              <h2 className="text-xl font-bold font-sans text-gray-900 mb-4 border-b pb-2">Preferences & Notes</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {lead.travel_vibes && lead.travel_vibes.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Travel Vibes</label>
+                    <div className="flex flex-wrap gap-2">
+                       {lead.travel_vibes.map(v => (
+                         <span key={v} className="bg-purple-50 text-purple-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {lead.special_occasions && lead.special_occasions.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Special Occasions</label>
+                     <div className="flex flex-wrap gap-2">
+                       {lead.special_occasions.map(v => (
+                         <span key={v} className="bg-pink-50 text-pink-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                {lead.accommodation_type && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Accommodation Type</label>
+                    <p className="text-gray-900">{lead.accommodation_type}</p>
+                  </div>
+                )}
+
+                 {lead.private_tour_themes && lead.private_tour_themes.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Tour Themes</label>
+                     <div className="flex flex-wrap gap-2">
+                       {lead.private_tour_themes.map(v => (
+                         <span key={v} className="bg-blue-50 text-blue-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                 {lead.experience_styles && lead.experience_styles.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Experience Styles</label>
+                     <div className="flex flex-wrap gap-2">
+                       {lead.experience_styles.map(v => (
+                         <span key={v} className="bg-indigo-50 text-indigo-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                 {lead.concierge_interests && lead.concierge_interests.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Concierge Requests</label>
+                     <div className="flex flex-wrap gap-2">
+                       {lead.concierge_interests.map(v => (
+                         <span key={v} className="bg-orange-50 text-orange-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+
+                 {lead.transfers_drivers && lead.transfers_drivers.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Mobility</label>
+                     <div className="flex flex-wrap gap-2">
+                       {lead.transfers_drivers.map(v => (
+                         <span key={v} className="bg-teal-50 text-teal-700 px-2 py-1 rounded text-sm">{v}</span>
+                       ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Additional Notes & Message */}
+          {(lead.message || lead.additional_notes) && (
+            <div>
+              <h2 className="text-xl font-bold font-sans text-gray-900 mb-4 border-b pb-2">Notes & Message</h2>
+              <div className="space-y-6">
+                {lead.message && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Original Message</label>
+                    <div className="p-4 bg-gray-50 rounded-lg text-gray-900 whitespace-pre-wrap">
+                      {lead.message}
+                    </div>
+                  </div>
+                )}
+                {lead.additional_notes && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-2">Additional Notes</label>
+                     <div className="p-4 bg-yellow-50 rounded-lg text-gray-900 whitespace-pre-wrap">
+                      {lead.additional_notes}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="border-t pt-6 flex justify-end gap-4">
+            <button
+              onClick={() => handleStatusUpdate('contacted')}
+              disabled={updating || lead.status === 'contacted'}
+              className="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              Mark Contacted
+            </button>
+            <button
+              onClick={() => handleStatusUpdate('converted')}
+              disabled={updating || lead.status === 'converted'}
+              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
+            >
+              Mark Converted
+            </button>
+             <button
+              onClick={() => handleStatusUpdate('closed')}
+              disabled={updating || lead.status === 'closed'}
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50"
+            >
+              Close Lead
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </AdminLayout>
+  )
+}
+
