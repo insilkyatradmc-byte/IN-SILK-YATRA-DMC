@@ -18,27 +18,33 @@ export default function LargeTextAnimation({ text, direction, delay = 0 }: Large
   useEffect(() => {
     if (!textRef.current) return
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        textRef.current,
-        { x: direction === 'left' ? -200 : 200, opacity: 0 },
-        {
-          x: 0,
-          opacity: 0.3,
-          duration: 1.5,
-          delay,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: textRef.current,
-            start: 'top 80%',
-            end: 'bottom 20%',
-            toggleActions: 'play none none reverse',
-          },
-        }
-      )
-    }, textRef)
+    let ctx: gsap.Context
+    const rafId = requestAnimationFrame(() => {
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          textRef.current,
+          { x: direction === 'left' ? -200 : 200, opacity: 0 },
+          {
+            x: 0,
+            opacity: 0.3,
+            duration: 1.5,
+            delay,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: textRef.current,
+              start: 'top 80%',
+              end: 'bottom 20%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }, textRef)
+    })
 
-    return () => ctx.revert()
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx?.revert()
+    }
   }, [direction, delay])
 
   return (

@@ -30,51 +30,56 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
     const overlayText = overlayTextRef.current
     const hiddenText = hiddenTextRef.current
 
-    // gsap.context scopes all tweens+triggers — ctx.revert() kills only these on unmount
-    const ctx = gsap.context(() => {
-      // Initial fade in from bottom
-      gsap.fromTo(
-        imageWrapper,
-        { opacity: 0, y: 150 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          ease: 'power3.out',
+    let ctx: gsap.Context
+    const rafId = requestAnimationFrame(() => {
+      ctx = gsap.context(() => {
+        // Initial fade in from bottom
+        gsap.fromTo(
+          imageWrapper,
+          { opacity: 0, y: 150 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1.2,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: container,
+              start: 'top 80%',
+              end: 'top 50%',
+              scrub: 1,
+            },
+          }
+        )
+
+        // Main timeline for split, shrink and text animations
+        const mainTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: container,
-            start: 'top 80%',
-            end: 'top 50%',
+            start: 'top top',
+            end: '+=200%',
             scrub: 1,
+            pin: true,
           },
-        }
-      )
+        })
 
-      // Main timeline for split, shrink and text animations
-      const mainTimeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: '+=200%',
-          scrub: 1,
-          pin: true,
-        },
-      })
+        mainTimeline.to(overlayText, { y: -50, opacity: 0.8, duration: 0.3, ease: 'none' }, 0)
+        mainTimeline.to(left, { x: '-50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
+        mainTimeline.to(right, { x: '50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
+        mainTimeline.to(imageWrapper, { scale: 0.7, opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.5)
+        mainTimeline.to(overlayText, { opacity: 0, duration: 0.2 }, 0.6)
+        mainTimeline.fromTo(
+          hiddenText,
+          { opacity: 0, y: 100 },
+          { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
+          0.7
+        )
+      }, containerRef)
+    })
 
-      mainTimeline.to(overlayText, { y: -50, opacity: 0.8, duration: 0.3, ease: 'none' }, 0)
-      mainTimeline.to(left, { x: '-50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
-      mainTimeline.to(right, { x: '50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
-      mainTimeline.to(imageWrapper, { scale: 0.7, opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.5)
-      mainTimeline.to(overlayText, { opacity: 0, duration: 0.2 }, 0.6)
-      mainTimeline.fromTo(
-        hiddenText,
-        { opacity: 0, y: 100 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
-        0.7
-      )
-    }, containerRef)
-
-    return () => ctx.revert()
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx?.revert()
+    }
   }, [])
 
   return (

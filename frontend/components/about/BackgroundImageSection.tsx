@@ -25,31 +25,37 @@ export default function BackgroundImageSection({ src, alt, title, subtitle, para
 
     const elements = [titleRef.current, subtitleRef.current, contentRef.current].filter(Boolean)
 
-    const ctx = gsap.context(() => {
-      elements.forEach((element, index) => {
-        if (element) {
-          gsap.fromTo(
-            element,
-            { opacity: 0, y: 60 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: 1,
-              delay: index * 0.2,
-              ease: 'power3.out',
-              scrollTrigger: {
-                trigger: element,
-                start: 'top 85%',
-                end: 'bottom 15%',
-                toggleActions: 'play none none reverse',
-              },
-            }
-          )
-        }
-      })
-    }, containerRef)
+    let ctx: gsap.Context
+    const rafId = requestAnimationFrame(() => {
+      ctx = gsap.context(() => {
+        elements.forEach((element, index) => {
+          if (element) {
+            gsap.fromTo(
+              element,
+              { opacity: 0, y: 60 },
+              {
+                opacity: 1,
+                y: 0,
+                duration: 1,
+                delay: index * 0.2,
+                ease: 'power3.out',
+                scrollTrigger: {
+                  trigger: element,
+                  start: 'top 85%',
+                  end: 'bottom 15%',
+                  toggleActions: 'play none none reverse',
+                },
+              }
+            )
+          }
+        })
+      }, containerRef)
+    })
 
-    return () => ctx.revert()
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx?.revert()
+    }
   }, [])
 
   return (

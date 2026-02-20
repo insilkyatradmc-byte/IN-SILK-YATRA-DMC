@@ -27,32 +27,37 @@ export default function ScrollReveal({
     const initialX = direction === 'left' ? 100 : direction === 'right' ? -100 : 0
     const initialY = direction === 'up' ? 100 : direction === 'down' ? -100 : 0
 
-    // gsap.context scopes all tweens + triggers to this element only.
-    // ctx.revert() on cleanup kills ONLY these — never touches other components.
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        elementRef.current,
-        { opacity: 0, x: initialX, y: initialY },
-        {
-          opacity: 1,
-          x: 0,
-          y: 0,
-          duration: 1.2,
-          ease: 'power3.out',
-          delay,
-          scrollTrigger: {
-            trigger: elementRef.current,
-            start: 'top 88%',
-            end: 'bottom 15%',
-            // 'play none none reverse' — reverses when scrolled back above trigger,
-            // so re-navigating to this page replays the animation correctly.
-            toggleActions: 'play none none reverse',
-          },
-        }
-      )
-    }, elementRef)
+    // Defer GSAP setup to rAF so it runs AFTER the browser paints the page.
+    // Without this, on Next.js client-side navigation ScrollTrigger calculates
+    // positions before layout is final and snaps animations to their end state.
+    let ctx: gsap.Context
+    const rafId = requestAnimationFrame(() => {
+      ctx = gsap.context(() => {
+        gsap.fromTo(
+          elementRef.current,
+          { opacity: 0, x: initialX, y: initialY },
+          {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            duration: 1.2,
+            ease: 'power3.out',
+            delay,
+            scrollTrigger: {
+              trigger: elementRef.current,
+              start: 'top 88%',
+              end: 'bottom 15%',
+              toggleActions: 'play none none reverse',
+            },
+          }
+        )
+      }, elementRef)
+    })
 
-    return () => ctx.revert()
+    return () => {
+      cancelAnimationFrame(rafId)
+      ctx?.revert()
+    }
   }, [direction, delay])
 
   return (

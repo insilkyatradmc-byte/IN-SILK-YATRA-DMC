@@ -37,9 +37,11 @@ export default function MarqueeWithImage({ text, imageSrc, imageAlt, speed = 50 
       clonesAdded.push(clone)
     }
 
-    // Use gsap.context so ALL tweens / ScrollTriggers created here are
-    // automatically killed when this component unmounts — no global kill.
-    const ctx = gsap.context(() => {
+    // Defer to rAF so GSAP initialises after the browser paints — prevents
+    // ScrollTrigger from snapping to end state on Next.js client-side navigation.
+    let ctx: gsap.Context
+    const rafId = requestAnimationFrame(() => {
+    ctx = gsap.context(() => {
       // Seamless marquee
       gsap.to(marquee, {
         x: -contentWidth,
@@ -68,8 +70,11 @@ export default function MarqueeWithImage({ text, imageSrc, imageAlt, speed = 50 
       )
     }, containerRef)
 
+    }) // end rAF
+
     return () => {
-      ctx.revert()          // kills only THIS component's tweens + triggers
+      cancelAnimationFrame(rafId)
+      ctx?.revert()
       clonesAdded.forEach(c => c.remove())
     }
   }, [speed])
