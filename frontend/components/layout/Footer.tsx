@@ -29,22 +29,19 @@ export default function Footer() {
               <div className="space-y-1 text-sm">
                 <p className="uppercase tracking-wider text-gray-400 text-xs mb-3">BASED IN ALMATY</p>
                 <p className="font-light">EXPLORING KAZAKHSTAN</p>
-                <p className="text-gray-400 mt-4">T. +7 747 XXX XXXX</p>
-                <p className="text-gray-400">E. info@insilkyatradmc.com</p>
+                <p className="text-gray-400 mt-4">T. +7 707 422 7482</p>
+                <p className="text-gray-400">E. insilkyatradmc@gmail.com</p>
               </div>
             </div>
 
             <div>
               <p className="text-xs uppercase tracking-wider text-gray-400 mb-3">Connect with us</p>
               <div className="flex gap-4">
-                <a href="#" className="text-[#c4a676] hover:text-white transition-colors text-sm">
+                <a href="https://www.instagram.com/insilkyatradmc/" target="_blank" rel="noopener noreferrer" className="text-[#c4a676] hover:text-white transition-colors text-sm">
                   Instagram
                 </a>
-                <a href="#" className="text-[#c4a676] hover:text-white transition-colors text-sm">
+                <a href="https://www.facebook.com/share/1AgXykrVHo/" target="_blank" rel="noopener noreferrer" className="text-[#c4a676] hover:text-white transition-colors text-sm">
                   Facebook
-                </a>
-                <a href="#" className="text-[#c4a676] hover:text-white transition-colors text-sm">
-                  LinkedIn
                 </a>
               </div>
             </div>

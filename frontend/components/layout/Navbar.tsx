@@ -326,7 +326,7 @@ export default function Navbar() {
                   {/* Social Media Links */}
                   <div className="flex gap-4 mt-2">
                     <a 
-                      href="https://www.facebook.com/profile.php?id=61587158278146"
+                      href="https://www.facebook.com/share/1AgXykrVHo/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-[#c9b896] hover:text-white text-sm font-sans tracking-wider transition-colors"

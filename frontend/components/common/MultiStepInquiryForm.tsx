@@ -767,7 +767,7 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-center justify-center p-4 animate-fadeIn">
       <div className="bg-white rounded-lg shadow-2xl w-full max-w-4xl h-[85vh] overflow-hidden flex flex-col animate-slideUp">
         {/* Header */}
         <div className="relative p-6 border-b border-gray-200">
@@ -817,7 +817,7 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
                 BACK
               </button>
               
-              <div className="text-[#c9b896] text-sm font-light">+7 707 422 7482</div>
+              <div className="hidden md:block text-[#c9b896] text-sm font-light">+7 707 422 7482</div>
               
               <button
                 onClick={handleNext}

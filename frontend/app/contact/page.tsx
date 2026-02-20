@@ -103,8 +103,8 @@ export default function ContactPage() {
 
             {/* Right Column: Contact Info */}
             <div className="flex flex-col justify-center md:items-end md:text-right items-start text-left">
-                <p className="text-base md:text-lg font-light text-[#1c1917] leading-relaxed whitespace-nowrap">T.+7 777 123 4567</p>
-                <p className="text-base md:text-lg font-light text-[#1c1917] leading-relaxed break-all md:break-normal">E.info@insilkyatra.com</p>
+                <p className="text-base md:text-lg font-light text-[#1c1917] leading-relaxed whitespace-nowrap">T. +7 707 422 7482</p>
+                <p className="text-base md:text-lg font-light text-[#1c1917] leading-relaxed break-all md:break-normal">E. insilkyatradmc@gmail.com</p>
             </div>
         </div>
       </div>
