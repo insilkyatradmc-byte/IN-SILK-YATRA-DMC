@@ -54,11 +54,13 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
+  const getPhotoUrl = (photo: string) =>
+    photo.startsWith('http') ? photo : `${API_BASE}${photo}`
 
   usePreloadImages(
     testimonials
       .filter((t) => t.photo)
-      .map((t) => `${API_BASE}${t.photo}`)
+      .map((t) => getPhotoUrl(t.photo!))
   )
 
   const mouseX = useMotionValue(0)
@@ -167,7 +169,7 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
             whileHover={{ scale: 1.1, opacity: 1 }}
           >
             {t.photo ? (
-              <img src={`${API_BASE}${t.photo}`} alt={t.name} className="w-full h-full object-cover" />
+              <img src={getPhotoUrl(t.photo)} alt={t.name} className="w-full h-full object-cover" loading="lazy" />
             ) : (
               <div className="w-full h-full bg-gray-800 flex items-center justify-center">
                 <span className="text-gray-400 text-xs">👤</span>
@@ -206,7 +208,7 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
                 <React.Fragment key={t.id}>
                   {t.photo ? (
                     <motion.img
-                      src={`${API_BASE}${t.photo}`}
+                      src={getPhotoUrl(t.photo)}
                       alt={t.name}
                       className="absolute inset-0 w-12 h-12 rounded-full object-cover grayscale hover:grayscale-0 transition-[filter] duration-500"
                       animate={{

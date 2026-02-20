@@ -14,6 +14,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        // Seed inquiry form settings first (safe — uses firstOrCreate logic)
+        $this->call(InquiryFormSettingsSeeder::class);
         // Create roles (use firstOrCreate to avoid duplicates)
         $adminRole = Role::firstOrCreate(
             ['name' => 'admin'],

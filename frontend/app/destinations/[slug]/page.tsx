@@ -231,6 +231,7 @@ function TourCard({ tour, index }: { tour: Tour; index: number }) {
               src={getImageUrl(tour.image, tour.title)}
               alt={tour.title}
               className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+              loading="lazy"
             />
             <div className="absolute top-4 right-4 z-20 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-xs font-medium text-white border border-white/10 font-sans tracking-wide">
               {tour.duration} Days

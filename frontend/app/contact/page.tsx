@@ -97,6 +97,7 @@ export default function ContactPage() {
                       src="https://images.unsplash.com/photo-1559628376-f3fe5f782a2e?q=80&w=800" 
                       alt="Almaty Mountains"
                       className="w-full h-full object-cover"
+                      loading="lazy"
                     />
                  </div>
             </div>

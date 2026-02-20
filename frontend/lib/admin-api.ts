@@ -110,6 +110,9 @@ export const adminQueriesAPI = {
 export const adminInquiryFormSettingsAPI = {
   getAll: () => adminApi.get('/inquiry-form-settings'),
   getById: (id: number) => adminApi.get(`/inquiry-form-settings/${id}`),
+  create: (data: { setting_key: string; label: string; options: string[]; is_active?: boolean; sort_order?: number }) =>
+    adminApi.post('/inquiry-form-settings', data),
   update: (id: number, data: { label?: string; options?: string[]; is_active?: boolean; sort_order?: number }) =>
     adminApi.put(`/inquiry-form-settings/${id}`, data),
+  delete: (id: number) => adminApi.delete(`/inquiry-form-settings/${id}`),
 }

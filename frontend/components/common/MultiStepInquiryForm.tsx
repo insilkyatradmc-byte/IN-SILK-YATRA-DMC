@@ -62,6 +62,7 @@ interface FormOptions {
   concierge_services: string[];
   transfers: string[];
   travel_party_options: string[];
+  currencies: string[];
 }
 
 interface MultiStepInquiryFormProps {
@@ -82,7 +83,7 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
     childrenCount: 0,
     childrenAges: [],
     budgetAmount: '',
-    budgetCurrency: 'EUR',
+    budgetCurrency: 'Euro (EUR)',
     travelVibes: [],
     specialOccasions: [],
     accommodationType: '',
@@ -114,6 +115,7 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
     concierge_services: ['Restaurant Reservations', 'Local Guide Services', 'Translation Services', 'Event Planning'],
     transfers: ['Airport Transfers', 'Full-Day Private Driver', 'Inter-City Transfers'],
     travel_party_options: ['Just me', 'With my partner', 'With my family', 'With friends', 'Other'],
+    currencies: ['Tenge (KZT)', 'Euro (EUR)', 'Dollar (USD)', 'INR (₹)'],
   });
   const [loadingOptions, setLoadingOptions] = useState(true);
 
@@ -418,10 +420,29 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
                     placeholder="8,000"
                     className="flex-1 max-w-xs p-4 border-b-2 border-gray-300 bg-transparent focus:border-[#c9b896] outline-none transition-all duration-300 font-light text-center text-lg"
                   />
-                  <div className="px-6 py-4 bg-[#c9b896] text-white text-center tracking-wider">
-                    EUR
-                  </div>
                 </div>
+
+              <div className="mt-6">
+                <label className="block text-xs font-light mb-3 text-gray-500 text-center tracking-[0.3em] uppercase">
+                  Currency
+                </label>
+                <div className="flex flex-wrap gap-3 justify-center">
+                  {(formOptions?.currencies || ['Tenge (KZT)', 'Euro (EUR)', 'Dollar (USD)', 'INR (₹)']).map((currency) => (
+                    <button
+                      key={currency}
+                      type="button"
+                      onClick={() => updateFormData('budgetCurrency', currency)}
+                      className={`px-6 py-3 border-b-2 transition-all duration-300 font-light ${
+                        formData.budgetCurrency === currency
+                          ? 'bg-[#c9b896]/10 border-[#c9b896] text-[#1c1917]'
+                          : 'border-gray-300 hover:border-[#c9b896] text-gray-600'
+                      }`}
+                    >
+                      {currency}
+                    </button>
+                  ))}
+                </div>
+              </div>
               </div>
             </div>
           </div>

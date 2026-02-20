@@ -28,13 +28,39 @@ class InquiryFormSettingsController extends Controller
         ]);
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'setting_key' => 'required|string|max:100|unique:inquiry_form_settings,setting_key',
+            'label'       => 'required|string|max:255',
+            'options'     => 'required|array|min:1',
+            'options.*'   => 'string',
+            'is_active'   => 'sometimes|boolean',
+            'sort_order'  => 'sometimes|integer',
+        ]);
+
+        $setting = InquiryFormSetting::create([
+            'setting_key' => $request->setting_key,
+            'label'       => $request->label,
+            'options'     => $request->options,
+            'is_active'   => $request->boolean('is_active', true),
+            'sort_order'  => $request->input('sort_order', InquiryFormSetting::max('sort_order') + 1),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inquiry form setting created successfully',
+            'data'    => $setting,
+        ], 201);
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
-            'label' => 'sometimes|string|max:255',
-            'options' => 'sometimes|array',
-            'options.*' => 'string',
-            'is_active' => 'sometimes|boolean',
+            'label'      => 'sometimes|string|max:255',
+            'options'    => 'sometimes|array',
+            'options.*'  => 'string',
+            'is_active'  => 'sometimes|boolean',
             'sort_order' => 'sometimes|integer',
         ]);
 
@@ -44,7 +70,18 @@ class InquiryFormSettingsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Inquiry form setting updated successfully',
-            'data' => $setting,
+            'data'    => $setting,
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $setting = InquiryFormSetting::findOrFail($id);
+        $setting->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Inquiry form setting deleted successfully',
         ]);
     }
 }

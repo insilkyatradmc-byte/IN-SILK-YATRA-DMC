@@ -54,6 +54,8 @@ Route::middleware('auth.admin')->group(function () {
 
     // Inquiry Form Settings
     Route::get('/inquiry-form-settings', [InquiryFormSettingsController::class, 'index']);
+    Route::post('/inquiry-form-settings', [InquiryFormSettingsController::class, 'store']);
     Route::get('/inquiry-form-settings/{id}', [InquiryFormSettingsController::class, 'show']);
     Route::put('/inquiry-form-settings/{id}', [InquiryFormSettingsController::class, 'update']);
+    Route::delete('/inquiry-form-settings/{id}', [InquiryFormSettingsController::class, 'destroy']);
 });

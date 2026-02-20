@@ -22,6 +22,7 @@ export default function BoutiqueSilkRoadHotelsSection() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isSticky, setIsSticky] = useState(false);
   const scrollAccumulator = useRef(0);
+  const touchStartY = useRef(0);
 
   // 10 curated images
   const boutiqueSilkRoadImages = [
@@ -84,12 +85,44 @@ export default function BoutiqueSilkRoadHotelsSection() {
       }
     };
 
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY.current = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const rect = section.getBoundingClientRect();
+      const isAtTop = rect.top <= 1 && rect.top >= -1;
+
+      if (isAtTop || (isSticky && scrollProgress < 100)) {
+        const deltaY = touchStartY.current - e.touches[0].clientY;
+        touchStartY.current = e.touches[0].clientY;
+        scrollAccumulator.current += deltaY;
+
+        const maxScroll = 2000;
+        const newProgress = Math.max(0, Math.min(100, (scrollAccumulator.current / maxScroll) * 100));
+        setScrollProgress(newProgress);
+
+        if (newProgress < 100 && newProgress > 0) {
+          e.preventDefault();
+          setIsSticky(true);
+        } else if (newProgress >= 100 && deltaY > 0) {
+          setIsSticky(false);
+        } else if (newProgress <= 0 && deltaY < 0) {
+          scrollAccumulator.current = 0;
+        }
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('wheel', handleWheel);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
     };
   }, [scrollProgress, isSticky]);
 

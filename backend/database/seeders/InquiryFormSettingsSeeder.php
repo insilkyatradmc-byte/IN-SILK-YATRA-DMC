@@ -141,10 +141,22 @@ class InquiryFormSettingsSeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 9,
             ],
+            [
+                'setting_key' => 'currencies',
+                'label' => 'Budget Currencies',
+                'options' => json_encode([
+                    'Tenge (KZT)',
+                    'Euro (EUR)',
+                    'Dollar (USD)',
+                    'INR (₹)',
+                ]),
+                'is_active' => true,
+                'sort_order' => 10,
+            ],
         ];
 
         foreach ($settings as $setting) {
-            DB::table('inquiry_form_settings')->insert(array_merge($setting, [
+            DB::table('inquiry_form_settings')->insertOrIgnore(array_merge($setting, [
                 'created_at' => now(),
                 'updated_at' => now(),
             ]));

@@ -57,7 +57,7 @@ const FeaturedTours = memo(function FeaturedTours() {
               <div key={tour.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="h-48 bg-gray-200 flex items-center justify-center">
                   {tour.image ? (
-                    <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" />
+                    <img src={tour.image} alt={tour.title} className="w-full h-full object-cover" loading="lazy" />
                   ) : (
                     <span className="text-gray-400">No Image</span>
                   )}
