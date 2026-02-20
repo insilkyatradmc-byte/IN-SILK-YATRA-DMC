@@ -1,11 +1,8 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import Image from 'next/image'
-
-gsap.registerPlugin(ScrollTrigger)
 
 interface SplitImageScrollProps {
   src: string
@@ -14,84 +11,33 @@ interface SplitImageScrollProps {
 
 export default function SplitImageScroll({ src, alt }: SplitImageScrollProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const leftRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!containerRef.current || !leftRef.current || !rightRef.current) return
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  })
 
-    const container = containerRef.current
-    const left = leftRef.current
-    const right = rightRef.current
-
-    let ctx: gsap.Context
-    const rafId = requestAnimationFrame(() => {
-      ctx = gsap.context(() => {
-        // Initial fade in
-        gsap.fromTo(
-          container,
-          { opacity: 0, y: 100 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            scrollTrigger: {
-              trigger: container,
-              start: 'top 80%',
-              end: 'top 50%',
-              scrub: 1,
-            },
-          }
-        )
-
-        // Split effect when reaching top
-        const splitTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: container,
-            start: 'top top',
-            end: 'bottom top',
-            scrub: 1,
-            pin: true,
-          },
-        })
-
-        splitTimeline
-          .to(left, { x: '-50%', duration: 1, ease: 'power2.inOut' }, 0)
-          .to(right, { x: '50%', duration: 1, ease: 'power2.inOut' }, 0)
-          .to(container, { scale: 0.8, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.5)
-      }, containerRef)
-    })
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      ctx?.revert()
-    }
-  }, [])
+  const wrapperOpacity = useTransform(scrollYProgress, [0, 0.15, 0.7, 0.9], [0, 1, 1, 0])
+  const wrapperY = useTransform(scrollYProgress, [0, 0.15], ['8%', '0%'])
+  const wrapperScale = useTransform(scrollYProgress, [0.65, 0.9], [1, 0.82])
+  const leftX = useTransform(scrollYProgress, [0.2, 0.8], ['0%', '-50%'])
+  const rightX = useTransform(scrollYProgress, [0.2, 0.8], ['0%', '50%'])
 
   return (
-    <div ref={containerRef} className="relative h-screen w-full overflow-hidden">
-      <div className="absolute inset-0 flex">
-        <div ref={leftRef} className="relative w-1/2 h-full overflow-hidden">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-cover object-left"
-            style={{ clipPath: 'inset(0 0 0 0)' }}
-            priority
-          />
+    <div ref={containerRef} className="relative h-[300vh] overflow-hidden">
+      <motion.div
+        className="sticky top-0 h-screen w-full"
+        style={{ opacity: wrapperOpacity, y: wrapperY, scale: wrapperScale }}
+      >
+        <div className="absolute inset-0 flex">
+          <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: leftX }}>
+            <Image src={src} alt={alt} fill className="object-cover object-left" priority />
+          </motion.div>
+          <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: rightX }}>
+            <Image src={src} alt={alt} fill className="object-cover object-right" priority />
+          </motion.div>
         </div>
-        <div ref={rightRef} className="relative w-1/2 h-full overflow-hidden">
-          <Image
-            src={src}
-            alt={alt}
-            fill
-            className="object-cover object-right"
-            style={{ clipPath: 'inset(0 0 0 0)' }}
-            priority
-          />
-        </div>
-      </div>
+      </motion.div>
     </div>
   )
 }

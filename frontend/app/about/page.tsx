@@ -1,29 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import ScrollReveal from '@/components/about/ScrollReveal'
 import SplitImageWithOverlay from '@/components/about/SplitImageWithOverlay'
 import BackgroundImageSection from '@/components/about/BackgroundImageSection'
 import LargeTextAnimation from '@/components/about/LargeTextAnimation'
 import MarqueeWithImage from '@/components/about/MarqueeWithImage'
 
-gsap.registerPlugin(ScrollTrigger)
-
 export default function AboutPage() {
-  // After all child components' rAF-deferred GSAP setups have fired in frame N,
-  // this double-rAF fires in frame N+1 and forces ScrollTrigger to recalculate
-  // all pinned-section scroll distances with the fully-painted layout.
-  useEffect(() => {
-    const inner = requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh()
-      })
-    })
-    return () => cancelAnimationFrame(inner)
-  }, [])
-
   return (
     <div className="bg-[#e8e6e1] overflow-hidden">
       {/* Scrolling Marquee with Image Animation */}

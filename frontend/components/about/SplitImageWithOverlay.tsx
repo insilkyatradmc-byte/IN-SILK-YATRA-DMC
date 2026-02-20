@@ -1,10 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 interface SplitImageWithOverlayProps {
   leftSrc: string
@@ -14,111 +11,81 @@ interface SplitImageWithOverlayProps {
 
 export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitImageWithOverlayProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const imageWrapperRef = useRef<HTMLDivElement>(null)
-  const leftRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
-  const overlayTextRef = useRef<HTMLDivElement>(null)
-  const hiddenTextRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!containerRef.current || !imageWrapperRef.current || !leftRef.current || !rightRef.current || !overlayTextRef.current || !hiddenTextRef.current) return
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  })
 
-    const container = containerRef.current
-    const imageWrapper = imageWrapperRef.current
-    const left = leftRef.current
-    const right = rightRef.current
-    const overlayText = overlayTextRef.current
-    const hiddenText = hiddenTextRef.current
+  // ── Timeline (160vh total) ────────────────────────────────────────
+  // Scroll 0   : image fully visible, "A SHARED STORY" overlay visible
+  // 0.00–0.72  : doors slide open immediately — pure horizontal, no Y
+  // 0.60–0.80  : panels fade out as doors finish opening
+  // 0.78–1.00  : hidden text rises in
 
-    let ctx: gsap.Context
-    const rafId = requestAnimationFrame(() => {
-      ctx = gsap.context(() => {
-        // Initial fade in from bottom
-        gsap.fromTo(
-          imageWrapper,
-          { opacity: 0, y: 150 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1.2,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: container,
-              start: 'top 80%',
-              end: 'top 50%',
-              scrub: 1,
-            },
-          }
-        )
+  // Image starts fully visible — no fade-in wait
+  const imageOpacity = useTransform(scrollYProgress, [0.60, 0.80], [1, 0])
 
-        // Main timeline for split, shrink and text animations
-        const mainTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: container,
-            start: 'top top',
-            end: '+=200%',
-            scrub: 1,
-            pin: true,
-          },
-        })
+  // Doors open from the very first scroll pixel
+  const leftX  = useTransform(scrollYProgress, [0, 0.72], ['0%', '-100%'])
+  const rightX = useTransform(scrollYProgress, [0, 0.72], ['0%',  '100%'])
 
-        mainTimeline.to(overlayText, { y: -50, opacity: 0.8, duration: 0.3, ease: 'none' }, 0)
-        mainTimeline.to(left, { x: '-50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
-        mainTimeline.to(right, { x: '50%', duration: 0.4, ease: 'power2.inOut' }, 0.3)
-        mainTimeline.to(imageWrapper, { scale: 0.7, opacity: 0, duration: 0.3, ease: 'power2.in' }, 0.5)
-        mainTimeline.to(overlayText, { opacity: 0, duration: 0.2 }, 0.6)
-        mainTimeline.fromTo(
-          hiddenText,
-          { opacity: 0, y: 100 },
-          { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
-          0.7
-        )
-      }, containerRef)
-    })
+  // Counter-translate so image stays visually stationary while door slides
+  const leftImgX  = useTransform(scrollYProgress, [0, 0.72], ['0%',  '100%'])
+  const rightImgX = useTransform(scrollYProgress, [0, 0.72], ['0%', '-100%'])
 
-    return () => {
-      cancelAnimationFrame(rafId)
-      ctx?.revert()
-    }
-  }, [])
+  // "A SHARED STORY" fades out as split progresses
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.30, 0.55], [1, 1, 0])
+
+  // Hidden text after doors open
+  const hiddenTextOpacity = useTransform(scrollYProgress, [0.78, 1.0], [0, 1])
+  const hiddenTextY       = useTransform(scrollYProgress, [0.78, 1.0], ['5%', '0%'])
 
   return (
-    <div ref={containerRef} className="relative h-screen w-full bg-black">
-      {/* Image Wrapper - splits and shrinks */}
-      <div ref={imageWrapperRef} className="absolute inset-0 flex">
-        <div ref={leftRef} className="relative w-1/2 h-full overflow-hidden">
-          <img
-            src={leftSrc}
-            alt={alt}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center' }}
-          />
-        </div>
-        <div ref={rightRef} className="relative w-1/2 h-full overflow-hidden">
-          <img
-            src={rightSrc}
-            alt={alt}
-            className="absolute inset-0 w-full h-full object-cover"
-            style={{ objectPosition: 'center' }}
-          />
-        </div>
-      </div>
+    <div ref={containerRef} className="relative h-[160vh] bg-black">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
 
-      {/* Overlay Text - on top of image */}
-      <div ref={overlayTextRef} className="absolute inset-0 flex items-center justify-start px-12 md:px-20 pointer-events-none z-10">
-        <h2 className="text-white text-[8vw] md:text-[7vw] font-light leading-tight tracking-wide">
-          A SHARED<br />STORY
-        </h2>
-      </div>
+        {/* Door panels */}
+        <motion.div className="absolute inset-0 flex" style={{ opacity: imageOpacity }}>
+          <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: leftX }}>
+            <motion.img
+              src={leftSrc} alt={alt}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ x: leftImgX }}
+            />
+          </motion.div>
+          <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: rightX }}>
+            <motion.img
+              src={rightSrc} alt={alt}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ x: rightImgX }}
+            />
+          </motion.div>
+        </motion.div>
 
-      {/* Hidden Text - behind image, revealed when image shrinks */}
-      <div ref={hiddenTextRef} className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center pointer-events-none z-0">
-        <h2 className="text-white text-[5vw] md:text-[4vw] font-light leading-tight tracking-wide mb-8">
-          A STORY PASSED<br />FROM ONE GENERATION<br />TO THE NEXT
-        </h2>
-        <p className="text-white text-lg md:text-xl max-w-2xl opacity-80">
-          This is where the story begins — and where it continues to breathe.
-        </p>
+        {/* "A SHARED STORY" overlay */}
+        <motion.div
+          className="absolute inset-0 flex items-center justify-start px-12 md:px-20 pointer-events-none z-10"
+          style={{ opacity: overlayOpacity }}
+        >
+          <h2 className="text-white text-[8vw] md:text-[7vw] font-light leading-tight tracking-wide">
+            A SHARED<br />STORY
+          </h2>
+        </motion.div>
+
+        {/* Revealed text */}
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center pointer-events-none z-0"
+          style={{ opacity: hiddenTextOpacity, y: hiddenTextY }}
+        >
+          <h2 className="text-white text-[5vw] md:text-[4vw] font-light leading-tight tracking-wide mb-8">
+            A STORY PASSED<br />FROM ONE GENERATION<br />TO THE NEXT
+          </h2>
+          <p className="text-white text-lg md:text-xl max-w-2xl opacity-80">
+            This is where the story begins — and where it continues to breathe.
+          </p>
+        </motion.div>
+
       </div>
     </div>
   )

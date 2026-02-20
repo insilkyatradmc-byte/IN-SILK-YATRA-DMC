@@ -1,10 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-gsap.registerPlugin(ScrollTrigger)
+import { motion } from 'framer-motion'
 
 interface LargeTextAnimationProps {
   text: string
@@ -13,52 +9,18 @@ interface LargeTextAnimationProps {
 }
 
 export default function LargeTextAnimation({ text, direction, delay = 0 }: LargeTextAnimationProps) {
-  const textRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!textRef.current) return
-
-    let ctx: gsap.Context
-    const rafId = requestAnimationFrame(() => {
-      ctx = gsap.context(() => {
-        gsap.fromTo(
-          textRef.current,
-          { x: direction === 'left' ? -200 : 200, opacity: 0 },
-          {
-            x: 0,
-            opacity: 0.3,
-            duration: 1.5,
-            delay,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: textRef.current,
-              start: 'top 80%',
-              end: 'bottom 20%',
-              toggleActions: 'play none none reverse',
-            },
-          }
-        )
-      }, textRef)
-    })
-
-    return () => {
-      cancelAnimationFrame(rafId)
-      ctx?.revert()
-    }
-  }, [direction, delay])
-
   return (
-    <div
-      ref={textRef}
+    <motion.div
       className={`text-[15vw] md:text-[12vw] font-light tracking-wider text-white select-none ${
         direction === 'right' ? 'text-right' : 'text-left'
       }`}
-      style={{ 
-        fontFamily: 'system-ui, -apple-system, sans-serif',
-        letterSpacing: '0.05em'
-      }}
+      style={{ fontFamily: 'system-ui, -apple-system, sans-serif', letterSpacing: '0.05em' }}
+      initial={{ x: direction === 'left' ? -200 : 200, opacity: 0 }}
+      whileInView={{ x: 0, opacity: 0.3 }}
+      viewport={{ once: false, amount: 0.2 }}
+      transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay }}
     >
       {text}
-    </div>
+    </motion.div>
   )
 }
