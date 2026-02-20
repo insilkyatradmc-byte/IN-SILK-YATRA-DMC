@@ -24,47 +24,35 @@ export default function ScrollReveal({
   useEffect(() => {
     if (!elementRef.current) return
 
-    const element = elementRef.current
+    const initialX = direction === 'left' ? 100 : direction === 'right' ? -100 : 0
+    const initialY = direction === 'up' ? 100 : direction === 'down' ? -100 : 0
 
-    // Initial state
-    const initialState: any = { opacity: 0 }
-    switch (direction) {
-      case 'up':
-        initialState.y = 100
-        break
-      case 'down':
-        initialState.y = -100
-        break
-      case 'left':
-        initialState.x = 100
-        break
-      case 'right':
-        initialState.x = -100
-        break
-    }
+    // gsap.context scopes all tweens + triggers to this element only.
+    // ctx.revert() on cleanup kills ONLY these — never touches other components.
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        elementRef.current,
+        { opacity: 0, x: initialX, y: initialY },
+        {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          delay,
+          scrollTrigger: {
+            trigger: elementRef.current,
+            start: 'top 88%',
+            end: 'bottom 15%',
+            // 'play none none reverse' — reverses when scrolled back above trigger,
+            // so re-navigating to this page replays the animation correctly.
+            toggleActions: 'play none none reverse',
+          },
+        }
+      )
+    }, elementRef)
 
-    gsap.set(element, initialState)
-
-    // Animate on scroll
-    const animation = gsap.to(element, {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      duration: 1.2,
-      ease: 'power3.out',
-      delay,
-      scrollTrigger: {
-        trigger: element,
-        start: 'top 85%',
-        end: 'bottom 15%',
-        toggleActions: 'play none none none',
-      },
-    })
-
-    return () => {
-      animation.kill()
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
+    return () => ctx.revert()
   }, [direction, delay])
 
   return (

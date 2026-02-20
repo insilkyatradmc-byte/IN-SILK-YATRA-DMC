@@ -24,55 +24,42 @@ export default function SplitImageScroll({ src, alt }: SplitImageScrollProps) {
     const left = leftRef.current
     const right = rightRef.current
 
-    // Initial fade in
-    gsap.fromTo(
-      container,
-      { opacity: 0, y: 100 },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
+    const ctx = gsap.context(() => {
+      // Initial fade in
+      gsap.fromTo(
+        container,
+        { opacity: 0, y: 100 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          scrollTrigger: {
+            trigger: container,
+            start: 'top 80%',
+            end: 'top 50%',
+            scrub: 1,
+          },
+        }
+      )
+
+      // Split effect when reaching top
+      const splitTimeline = gsap.timeline({
         scrollTrigger: {
           trigger: container,
-          start: 'top 80%',
-          end: 'top 50%',
+          start: 'top top',
+          end: 'bottom top',
           scrub: 1,
+          pin: true,
         },
-      }
-    )
+      })
 
-    // Split effect when reaching top
-    const splitTimeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1,
-        pin: true,
-      },
-    })
+      splitTimeline
+        .to(left, { x: '-50%', duration: 1, ease: 'power2.inOut' }, 0)
+        .to(right, { x: '50%', duration: 1, ease: 'power2.inOut' }, 0)
+        .to(container, { scale: 0.8, opacity: 0, duration: 0.5, ease: 'power2.in' }, 0.5)
+    }, containerRef)
 
-    splitTimeline
-      .to(left, {
-        x: '-50%',
-        duration: 1,
-        ease: 'power2.inOut',
-      }, 0)
-      .to(right, {
-        x: '50%',
-        duration: 1,
-        ease: 'power2.inOut',
-      }, 0)
-      .to(container, {
-        scale: 0.8,
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.in',
-      }, 0.5)
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
+    return () => ctx.revert()
   }, [])
 
   return (

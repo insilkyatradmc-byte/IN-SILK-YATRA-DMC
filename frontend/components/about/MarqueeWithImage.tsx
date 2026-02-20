@@ -15,6 +15,7 @@ interface MarqueeWithImageProps {
 
 export default function MarqueeWithImage({ text, imageSrc, imageAlt, speed = 50 }: MarqueeWithImageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const stickyRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLDivElement>(null)
   const marqueeRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -22,83 +23,91 @@ export default function MarqueeWithImage({ text, imageSrc, imageAlt, speed = 50 
   useEffect(() => {
     if (!containerRef.current || !imageRef.current || !marqueeRef.current || !contentRef.current) return
 
-    const container = containerRef.current
-    const image = imageRef.current
     const marquee = marqueeRef.current
     const content = contentRef.current
+    const container = containerRef.current
+    const image = imageRef.current
 
-    // Marquee animation - seamless loop
-    const contentWidth = content.offsetWidth
-    
-    // Create multiple clones for seamless effect
-    const clone1 = content.cloneNode(true) as HTMLDivElement
-    const clone2 = content.cloneNode(true) as HTMLDivElement
-    marquee.appendChild(clone1)
-    marquee.appendChild(clone2)
+    // Build clones so the marquee has enough text to loop
+    const contentWidth = content.scrollWidth
+    const clonesAdded: HTMLDivElement[] = []
+    for (let i = 0; i < 3; i++) {
+      const clone = content.cloneNode(true) as HTMLDivElement
+      marquee.appendChild(clone)
+      clonesAdded.push(clone)
+    }
 
-    // Seamless infinite scroll
-    gsap.to(marquee, {
-      x: -contentWidth,
-      duration: speed,
-      ease: 'none',
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.unitize(x => parseFloat(x) % contentWidth),
-      },
-    })
-
-    // Image scroll animation
-    gsap.fromTo(
-      image,
-      { y: '100vh', opacity: 0 },
-      {
-        y: '0vh',
-        opacity: 1,
+    // Use gsap.context so ALL tweens / ScrollTriggers created here are
+    // automatically killed when this component unmounts — no global kill.
+    const ctx = gsap.context(() => {
+      // Seamless marquee
+      gsap.to(marquee, {
+        x: -contentWidth,
+        duration: speed,
         ease: 'none',
-        scrollTrigger: {
-          trigger: container,
-          start: 'top top',
-          end: 'bottom center',
-          scrub: 1,
-          pin: true,
-        },
-      }
-    )
+        repeat: -1,
+        modifiers: { x: gsap.utils.unitize(x => parseFloat(x) % contentWidth) },
+      })
+
+      // Image rises into view as user scrolls through the 200vh container.
+      // Trigger is the CONTAINER, image animates inside the sticky wrapper.
+      gsap.fromTo(
+        image,
+        { yPercent: 60, opacity: 0 },
+        {
+          yPercent: 0,
+          opacity: 1,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: container,
+            start: 'top top',
+            end: 'center top',
+            scrub: 1,
+          },
+        }
+      )
+    }, containerRef)
 
     return () => {
-      gsap.killTweensOf(marquee)
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      ctx.revert()          // kills only THIS component's tweens + triggers
+      clonesAdded.forEach(c => c.remove())
     }
   }, [speed])
 
   return (
-    <div ref={containerRef} className="relative h-[200vh] bg-[#e8e6e1]">
-      {/* Fixed Marquee Background */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ marginTop: '-10vh' }}>
-        <div className="overflow-hidden whitespace-nowrap w-full bg-[#e8e6e1]">
-          <div ref={marqueeRef} className="inline-flex">
-            <div ref={contentRef} className="inline-flex items-center px-4">
-              <span className="text-[15vw] font-serif text-gray-500 opacity-50 tracking-[0.1em] uppercase select-none">
-                {text}
-              </span>
-              <span className="mx-6 text-[15vw] font-serif text-gray-500 opacity-50">•</span>
-              <span className="text-[15vw] font-serif text-gray-500 opacity-50 tracking-[0.1em] uppercase select-none">
-                {text}
-              </span>
-              <span className="mx-6 text-[15vw] font-serif text-gray-500 opacity-50">•</span>
+    // overflow-hidden prevents the sticky content from bleeding outside the component
+    <div ref={containerRef} className="relative h-[200vh] bg-[#e8e6e1] overflow-hidden">
+      {/* Sticky wrapper — stays at the top of the viewport while scrolling through 200vh */}
+      <div ref={stickyRef} className="sticky top-0 h-screen overflow-hidden flex items-center bg-[#e8e6e1]">
+        {/* Scrolling marquee text — contained inside sticky, not fixed */}
+        <div className="absolute inset-0 flex items-center overflow-hidden pointer-events-none">
+          <div className="overflow-hidden whitespace-nowrap w-full">
+            <div ref={marqueeRef} className="inline-flex">
+              <div ref={contentRef} className="inline-flex items-center px-4">
+                <span className="text-[15vw] font-serif text-gray-500 opacity-50 tracking-[0.1em] uppercase select-none">
+                  {text}
+                </span>
+                <span className="mx-6 text-[15vw] font-serif text-gray-500 opacity-50">•</span>
+                <span className="text-[15vw] font-serif text-gray-500 opacity-50 tracking-[0.1em] uppercase select-none">
+                  {text}
+                </span>
+                <span className="mx-6 text-[15vw] font-serif text-gray-500 opacity-50">•</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Image that animates up on scroll */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div ref={imageRef} className="w-full flex justify-center px-8">
+        {/* Image animates up within the sticky section */}
+        <div
+          ref={imageRef}
+          className="relative z-10 w-full flex justify-center px-8 pointer-events-none"
+        >
           <div className="relative w-full max-w-[250px] md:max-w-md aspect-[3/4] rounded-lg overflow-hidden shadow-xl">
             <img
               src={imageSrc}
               alt={imageAlt}
               className="w-full h-full object-cover"
+              loading="eager"
             />
           </div>
         </div>

@@ -74,24 +74,24 @@ export function Component() {
 
         const slides = [
             { 
-                title: "Charyn Canyon", 
-                description: "A geological marvel carved by wind and time in the heart of the steppe.", 
-                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515855/andy_bay-canyon-1740973_refb2k.jpg" 
-            },
-            { 
-                title: "Tian Shan Peaks", 
-                description: "Where the celestial mountains kiss the sky in Kyrgyzstan.", 
-                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515855/kanenori-mountain-5678172_ozgjmj.jpg" 
-            },
-            { 
-                title: "Kolsai Lakes", 
-                description: "The pearl of the Northern Tian Shan, reflecting alpine serenity.", 
-                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515856/milapom-kazakhstan-5434504_qa8ien.jpg" 
-            },
-            { 
                 title: "Almaty Soul", 
                 description: "The city of apples, where modern life meets ancient mountains.", 
-                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515855/deb_qep-hand-5426060_cvorw8.jpg" 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595975/some-autumn-views-of-almaty-city-v0-9j3t78sn981e1_igfg1q.jpg" 
+            },
+            { 
+                title: "Khan Tengri Peaks", 
+                description: "Alpine meadows and snow-covered summits in the heart of the Tien Shan.", 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595509/Alpine_meadows_and_snow-covered_peaks_in_Khan_Tengri_Nature_Park__Tien_Shan_1_fekbui.jpg" 
+            },
+            { 
+                title: "Charyn Canyon", 
+                description: "A geological marvel carved by wind and time in the heart of the steppe.", 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595312/visitalmatykz-visitalmaty-3457149_e5xwdy.jpg" 
+            },
+            { 
+                title: "Kolsai Lake", 
+                description: "The pearl of the Northern Tian Shan, reflecting alpine serenity.", 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595311/kolsay-lake-1-credit-to-rachita-saxena_bfefxq.jpg" 
             }
         ];
 

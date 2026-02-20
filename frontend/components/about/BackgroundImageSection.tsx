@@ -25,31 +25,31 @@ export default function BackgroundImageSection({ src, alt, title, subtitle, para
 
     const elements = [titleRef.current, subtitleRef.current, contentRef.current].filter(Boolean)
 
-    elements.forEach((element, index) => {
-      if (element) {
-        gsap.fromTo(
-          element,
-          { opacity: 0, y: 60 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            delay: index * 0.2,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: element,
-              start: 'top 85%',
-              end: 'bottom 15%',
-              toggleActions: 'play none none none',
-            },
-          }
-        )
-      }
-    })
+    const ctx = gsap.context(() => {
+      elements.forEach((element, index) => {
+        if (element) {
+          gsap.fromTo(
+            element,
+            { opacity: 0, y: 60 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 1,
+              delay: index * 0.2,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: element,
+                start: 'top 85%',
+                end: 'bottom 15%',
+                toggleActions: 'play none none reverse',
+              },
+            }
+          )
+        }
+      })
+    }, containerRef)
 
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
-    }
+    return () => ctx.revert()
   }, [])
 
   return (
