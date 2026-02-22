@@ -55,16 +55,9 @@ export default function RegisterPage() {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-stone-800/20 via-stone-950 to-stone-950 pointer-events-none" />
 
       <div className="relative w-full max-w-md">
-        {/* Logo / Brand */}
+        {/* Heading */}
         <div className="text-center mb-10">
-          <Link href="/">
-            <img
-              src="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770101106/file_0000000073e87208b9708e744f83bf52_gx37wu.png"
-              alt="IN-SILK YATRA"
-              className="h-20 w-auto mx-auto"
-            />
-          </Link>
-          <p className="mt-4 font-sans text-[10px] tracking-[0.3em] uppercase text-[#c9b896]">
+          <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-[#c9b896]">
             Join Us
           </p>
           <h1 className="mt-2 font-serif text-3xl md:text-4xl font-light text-white">
