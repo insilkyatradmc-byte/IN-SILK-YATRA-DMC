@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Inter, Dancing_Script } from 'next/font/google'
 import './globals.css'
 import LayoutWrapper from '@/components/layout/LayoutWrapper'
 import { Toaster } from 'react-hot-toast'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
@@ -62,6 +63,7 @@ export default function RootLayout({
             },
           }}
         />
+        <SpeedInsights />
       </body>
     </html>
   )

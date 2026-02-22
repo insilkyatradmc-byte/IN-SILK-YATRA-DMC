@@ -201,7 +201,7 @@ export default function DestinationDetailPage() {
               
               <div className="mt-8 pt-8 border-t border-white/10">
                 <Link
-                  href="/contact"
+                  href="/inquiry"
                   className="block w-full bg-[#c9b896] text-black font-semibold text-center py-4 rounded-lg hover:bg-[#b8a685] transition-colors"
                 >
                   Plan Your Trip

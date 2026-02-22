@@ -111,13 +111,12 @@ export default function Navbar() {
         ]
       : user
         ? [
-            { href: '/dashboard', label: 'Dashboard', auth: true },
+            { href: '/dashboard', label: 'My Profile', auth: true },
             { action: 'logout', label: 'Logout', auth: true },
           ]
         : [
             { href: '/login', label: 'Login', auth: true },
             { href: '/register', label: 'Register', auth: true },
-            { href: '/admin/login', label: 'Admin Login', auth: true, small: true },
           ]),
   ]
 

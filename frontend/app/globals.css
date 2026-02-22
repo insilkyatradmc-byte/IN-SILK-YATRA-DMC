@@ -124,6 +124,15 @@ body::-webkit-scrollbar {
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Headings: allow natural line breaks at word boundaries only */
+h1, h2, h3, h4, h5, h6 {
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: none;
 }
 
 /* Smooth scrolling and prevent layout shift */

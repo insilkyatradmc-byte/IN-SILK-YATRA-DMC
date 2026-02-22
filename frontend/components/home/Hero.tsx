@@ -41,11 +41,11 @@ export default function Hero() {
           
           {/* CTA Button - IN-SILK YATRA Style */}
           <Link 
-            href="/inquiry"
+            href="/destinations"
             className="group relative inline-flex items-center justify-center px-10 py-4 border-2 border-white text-white font-sans text-sm tracking-[0.2em] uppercase overflow-hidden transition-all duration-500 hover:text-stone-800"
           >
             <span className="relative z-10 transition-colors duration-500">
-              DEFINE YOUR JOURNEY
+              EXPLORE THE JOURNEY
             </span>
             <span className="absolute inset-0 bg-white transform scale-x-0 origin-left transition-transform duration-500 ease-out group-hover:scale-x-100" />
           </Link>
