@@ -124,6 +124,14 @@ class DestinationController extends Controller
     {
         $destination = Destination::findOrFail($id);
 
+        // Check if destination has any tours
+        if ($destination->tours()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete destination as it has associated tours. Please delete or reassign the tours first.',
+            ], 400);
+        }
+
         // Delete image from Cloudinary if exists
         if ($destination->image) {
             $publicId = $this->cloudinaryService->getPublicIdFromUrl($destination->image);

@@ -15,6 +15,7 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
+        'profile_photo',
         'role_id',
     ];
 
@@ -35,6 +36,11 @@ class User extends Authenticatable implements JWTSubject
     public function wishlist()
     {
         return $this->hasMany(Wishlist::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     /**

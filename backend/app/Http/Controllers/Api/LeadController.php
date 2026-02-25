@@ -13,7 +13,7 @@ class LeadController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:20',
             'country' => 'nullable|string|max:100',
             'message' => 'nullable|string',

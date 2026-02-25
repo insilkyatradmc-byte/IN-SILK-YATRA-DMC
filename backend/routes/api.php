@@ -10,6 +10,9 @@ use App\Http\Controllers\Api\TestimonialController;
 use App\Http\Controllers\Api\LeadController;
 use App\Http\Controllers\Api\ContactQueryController;
 use App\Http\Controllers\Api\InquiryFormSettingsController;
+use App\Http\Controllers\Api\JourneyPhotoController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\UserProfileController;
 
 // Public routes
 Route::get('/destinations', [DestinationController::class, 'index']);
@@ -21,10 +24,17 @@ Route::get('/tours/{id}', [TourController::class, 'show']);
 
 Route::get('/testimonials', [TestimonialController::class, 'index']);
 
+Route::get('/journey-photos', [JourneyPhotoController::class, 'index']);
+
 Route::get('/inquiry-form-settings', [InquiryFormSettingsController::class, 'index']);
 
 Route::post('/leads', [LeadController::class, 'store']);
 Route::post('/contact', [ContactQueryController::class, 'store']);
+
+// Review routes (public)
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/statistics', [ReviewController::class, 'statistics']);
+Route::post('/reviews', [ReviewController::class, 'store']);
 
 // Auth routes
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -34,6 +44,14 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    // User profile routes
+    Route::get('/profile', [UserProfileController::class, 'show']);
+    Route::put('/profile', [UserProfileController::class, 'update']);
+    Route::delete('/profile/photo', [UserProfileController::class, 'deletePhoto']);
+
+    // User reviews
+    Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
 
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);

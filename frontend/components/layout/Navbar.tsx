@@ -4,13 +4,14 @@ import Link from 'next/link'
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { auth, User } from '@/lib/auth'
 import { adminAuth, Admin } from '@/lib/admin-auth'
-import MultiStepInquiryForm from '@/components/common/MultiStepInquiryForm'
+import SimpleInquiryModal from '@/components/common/SimpleInquiryModal'
 import { throttle } from '@/lib/performance'
 
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/destinations', label: 'Destinations' },
   { href: '/tours', label: 'Tours' },
+  { href: '/reviews', label: 'Reviews' },
   { href: '/about', label: 'About Us' },
   { href: '/contact', label: 'Contact' },
 ]
@@ -349,7 +350,7 @@ export default function Navbar() {
       </div>
 
       {/* Inquiry Form Modal */}
-      <MultiStepInquiryForm 
+      <SimpleInquiryModal 
         isOpen={showInquiryForm} 
         onClose={() => setShowInquiryForm(false)} 
       />

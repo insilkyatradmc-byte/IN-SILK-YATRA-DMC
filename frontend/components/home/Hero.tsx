@@ -26,7 +26,7 @@ export default function Hero() {
           <div className="absolute inset-0 bg-gradient-to-br from-stone-800 via-stone-700 to-stone-600" />
         )}
         {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/40" aria-hidden />
+        <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
       </div>
 
       {/* Hero Content - Centered */}

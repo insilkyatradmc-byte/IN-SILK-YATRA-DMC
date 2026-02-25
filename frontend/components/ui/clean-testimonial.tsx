@@ -9,6 +9,7 @@ interface TestimonialData {
   content: string
   country: string | null
   photo: string | null
+  gallery_photos?: string[] | null // New field for additional photos
 }
 
 interface CleanTestimonialProps {
@@ -51,6 +52,11 @@ function SplitText({ text }: { text: string }) {
 export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
+  const [isHoveredOnGallery, setIsHoveredOnGallery] = useState(false)
+  const [isHoveredOnLightbox, setIsHoveredOnLightbox] = useState(false)
+  const [isHoveredInLightboxArea, setIsHoveredInLightboxArea] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
@@ -81,8 +87,58 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
   )
 
   const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % testimonials.length)
+    // If hovering over gallery, open first photo instead of going to next testimonial
+    if (isHoveredOnGallery) {
+      openLightbox(0)
+    } else {
+      setActiveIndex((prev) => (prev + 1) % testimonials.length)
+    }
   }
+
+  const openLightbox = useCallback((index: number) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }, [])
+
+  const closeLightbox = useCallback(() => {
+    setLightboxOpen(false)
+    setIsHoveredOnLightbox(false)
+    setIsHoveredInLightboxArea(false)
+  }, [])
+
+  const nextLightboxImage = useCallback(() => {
+    setLightboxIndex((prev) => {
+      const currentTestimonial = testimonials[activeIndex]
+      const galleryPhotos = currentTestimonial.gallery_photos || []
+      return (prev + 1) % galleryPhotos.length
+    })
+  }, [testimonials, activeIndex])
+
+  const prevLightboxImage = useCallback(() => {
+    setLightboxIndex((prev) => {
+      const currentTestimonial = testimonials[activeIndex]
+      const galleryPhotos = currentTestimonial.gallery_photos || []
+      return (prev - 1 + galleryPhotos.length) % galleryPhotos.length
+    })
+  }, [testimonials, activeIndex])
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeLightbox()
+      } else if (e.key === 'ArrowLeft') {
+        prevLightboxImage()
+      } else if (e.key === 'ArrowRight') {
+        nextLightboxImage()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightboxOpen, closeLightbox, prevLightboxImage, nextLightboxImage])
 
   if (!testimonials || testimonials.length === 0) {
     return (
@@ -102,11 +158,11 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={handleNext}
+      onClick={!lightboxOpen ? handleNext : undefined}
     >
       {/* Custom magnetic cursor */}
       <motion.div
-        className="pointer-events-none absolute z-50 mix-blend-difference"
+        className="pointer-events-none absolute z-[100]"
         style={{
           x: cursorX,
           y: cursorY,
@@ -115,21 +171,63 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
         }}
       >
         <motion.div
-          className="rounded-full bg-testimonial-foreground flex items-center justify-center"
+          className="rounded-full bg-white flex items-center justify-center shadow-lg"
           animate={{
-            width: isHovered ? 80 : 0,
-            height: isHovered ? 80 : 0,
-            opacity: isHovered ? 1 : 0,
+            width: (lightboxOpen ? isHoveredInLightboxArea : isHovered) ? 80 : 0,
+            height: (lightboxOpen ? isHoveredInLightboxArea : isHovered) ? 80 : 0,
+            opacity: (lightboxOpen ? isHoveredInLightboxArea : isHovered) ? 1 : 0,
           }}
           transition={{ type: "spring", damping: 20, stiffness: 200 }}
         >
-          <motion.span
-            className="text-testimonial-background text-xs font-medium tracking-wider uppercase"
-            animate={{ opacity: isHovered ? 1 : 0 }}
-            transition={{ delay: 0.1 }}
-          >
-            Next
-          </motion.span>
+          {lightboxOpen && isHoveredOnLightbox ? (
+            <motion.svg
+              className="w-6 h-6 text-black"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </motion.svg>
+          ) : isHoveredOnGallery ? (
+            <motion.svg
+              className="w-6 h-6 text-black"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </motion.svg>
+          ) : (
+            <motion.span
+              className="text-black text-xs font-medium tracking-wider uppercase"
+              animate={{ opacity: isHovered ? 1 : 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              Next
+            </motion.span>
+          )}
         </motion.div>
       </motion.div>
 
@@ -261,6 +359,48 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
           </div>
         </motion.div>
 
+        {/* Photo Gallery for current testimonial */}
+        {Array.isArray(currentTestimonial.gallery_photos) && currentTestimonial.gallery_photos.length > 0 && (
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`gallery-${activeIndex}`}
+              className="mt-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              onMouseEnter={() => setIsHoveredOnGallery(true)}
+              onMouseLeave={() => setIsHoveredOnGallery(false)}
+            >
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {currentTestimonial.gallery_photos.map((photoUrl, idx) => (
+                  <motion.div
+                    key={idx}
+                    className="relative aspect-square rounded-lg overflow-hidden bg-gray-800 group cursor-pointer"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.4, delay: 0.4 + idx * 0.1 }}
+                    whileHover={{ scale: 1.05 }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      openLightbox(idx)
+                    }}
+                  >
+                    <img
+                      src={getPhotoUrl(photoUrl)}
+                      alt={`Memory ${idx + 1}`}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                      loading="lazy"
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        )}
+
         {/* Progress bar */}
         <div className="mt-16 h-px bg-testimonial-border relative overflow-hidden">
           <motion.div
@@ -281,6 +421,123 @@ export function CleanTestimonial({ testimonials }: CleanTestimonialProps) {
       >
         <span className="text-[10px] text-testimonial-muted uppercase tracking-widest font-mono">Click anywhere</span>
       </motion.div>
+
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {lightboxOpen && currentTestimonial.gallery_photos && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
+            style={{ cursor: "none" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={closeLightbox}
+            onMouseMove={handleMouseMove}
+            onMouseEnter={() => setIsHoveredInLightboxArea(true)}
+            onMouseLeave={() => setIsHoveredInLightboxArea(false)}
+          >
+            {/* Close button */}
+            <button
+              className="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-3 transition-all duration-300 group"
+              onClick={closeLightbox}
+              aria-label="Close gallery"
+            >
+              <svg
+                className="w-6 h-6 text-white group-hover:rotate-90 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Image counter */}
+            <div className="absolute top-6 left-1/2 -translate-x-1/2 z-10 bg-white/10 backdrop-blur-sm rounded-full px-6 py-2">
+              <span className="text-white font-mono text-sm">
+                {lightboxIndex + 1} / {currentTestimonial.gallery_photos.length}
+              </span>
+            </div>
+
+            {/* Previous button */}
+            {currentTestimonial.gallery_photos.length > 1 && (
+              <button
+                className="absolute left-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-4 transition-all duration-300 group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevLightboxImage();
+                }}
+                aria-label="Previous image"
+              >
+                <svg
+                  className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+              </button>
+            )}
+
+            {/* Image container */}
+            <motion.div
+              className="relative mx-auto cursor-pointer"
+              style={{ maxWidth: "80vw", maxHeight: "75vh" }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              onClick={closeLightbox}
+              onMouseEnter={() => setIsHoveredOnLightbox(true)}
+              onMouseLeave={() => setIsHoveredOnLightbox(false)}
+            >
+              <img
+                src={getPhotoUrl(currentTestimonial.gallery_photos[lightboxIndex])}
+                alt={`Gallery image ${lightboxIndex + 1}`}
+                className="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl"
+              />
+            </motion.div>
+
+            {/* Next button */}
+            {currentTestimonial.gallery_photos.length > 1 && (
+              <button
+                className="absolute right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-full p-4 transition-all duration-300 group"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextLightboxImage();
+                }}
+                aria-label="Next image"
+              >
+                <svg
+                  className="w-8 h-8 text-white group-hover:scale-110 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

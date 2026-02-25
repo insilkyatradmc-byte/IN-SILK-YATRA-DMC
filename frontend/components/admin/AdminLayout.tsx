@@ -12,6 +12,7 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [admin, setAdmin] = useState<Admin | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
 
@@ -51,6 +52,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/tours', label: 'Tours' },
     { href: '/admin/destinations', label: 'Destinations' },
     { href: '/admin/testimonials', label: 'Testimonials' },
+    { href: '/admin/reviews', label: 'Reviews' },
+    { href: '/admin/journey-photos', label: 'Journey Photos' },
     { href: '/admin/leads', label: 'Leads' },
     { href: '/admin/queries', label: 'Contact Queries' },
     { href: '/admin/inquiry-settings', label: 'Inquiry Form Settings' },
@@ -59,7 +62,24 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
-      <aside className="fixed top-0 left-0 z-50 h-screen w-64 bg-white border-r border-gray-200 overflow-y-auto">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {mobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Sidebar */}
+      <aside className={`fixed top-0 left-0 z-40 h-screen w-64 bg-white border-r border-gray-200 overflow-y-auto transition-transform duration-300 ${
+        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         <div className="flex flex-col min-h-full">
           <div className="p-6 border-b border-gray-100">
             <Link href="/admin/dashboard" className="block">
@@ -98,8 +118,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         </div>
       </aside>
 
-      <div className="pl-64">
-        <main className="min-h-screen p-6 lg:p-10">{children}</main>
+      {/* Mobile Overlay */}
+      {mobileMenuOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className="lg:pl-64">
+        <main className="min-h-screen p-4 sm:p-6 lg:p-10 pt-16 lg:pt-6">{children}</main>
       </div>
     </div>
   )

@@ -12,6 +12,7 @@ export default function NewTestimonialPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
+  const [galleryPhotos, setGalleryPhotos] = useState<{ file: File; preview: string }[]>([])
   const [formData, setFormData] = useState({
     name: '',
     content: '',
@@ -32,6 +33,20 @@ export default function NewTestimonialPage() {
     }
   }
 
+  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    const newPhotos = files.map(file => {
+      const preview = URL.createObjectURL(file)
+      return { file, preview }
+    })
+    setGalleryPhotos([...galleryPhotos, ...newPhotos])
+  }
+
+  const removeGalleryPhoto = (index: number) => {
+    URL.revokeObjectURL(galleryPhotos[index].preview)
+    setGalleryPhotos(galleryPhotos.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -44,6 +59,9 @@ export default function NewTestimonialPage() {
       if (formData.photo) {
         submitData.append('photo', formData.photo)
       }
+      galleryPhotos.forEach((photo) => {
+        submitData.append('gallery_photos[]', photo.file)
+      })
       submitData.append('is_active', formData.is_active ? '1' : '0')
 
       await adminTestimonialsAPI.create(submitData)
@@ -129,6 +147,39 @@ export default function NewTestimonialPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               placeholder="What did the customer say?"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Gallery Photos (Optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleGalleryPhotosChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+            {galleryPhotos.length > 0 && (
+              <div className="mt-4 grid grid-cols-3 gap-4">
+                {galleryPhotos.map((photo, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={photo.preview}
+                      alt={`Gallery ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryPhoto(index)}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

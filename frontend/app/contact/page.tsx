@@ -250,6 +250,87 @@ export default function ContactPage() {
             </form>
         </div>
       </div>
+
+      {/* Branch Offices Section */}
+      <div className="w-full bg-[#1c1917] py-20 px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Heading */}
+          <div className="text-center mb-16">
+            <h2 className="text-5xl md:text-6xl font-serif text-[#e8e6e1] tracking-wide mb-4">
+              OUR OFFICES
+            </h2>
+            <div className="w-16 h-[1px] bg-[#c9b896] mx-auto"></div>
+          </div>
+
+          {/* Offices Grid */}
+          <div className="grid md:grid-cols-2 gap-12 md:gap-16">
+            
+            {/* Main Office - Kazakhstan */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="bg-[#2a2a2a] p-8 rounded-lg border border-[#c9b896]/20"
+            >
+              <div className="mb-6">
+                <h3 className="text-2xl font-serif text-[#c9b896] mb-2">Main Office</h3>
+                <div className="w-12 h-[1px] bg-[#c9b896]/50"></div>
+              </div>
+              
+              <div className="space-y-3 text-[#e8e6e1]">
+                <p className="text-base leading-relaxed">
+                  Улица Шорманова 20/1<br />
+                  Акбулак м-н Алатауский район<br />
+                  050038<br />
+                  Город Алматы<br />
+                  Казахстан
+                </p>
+                <div className="pt-4 border-t border-[#c9b896]/20">
+                  <p className="text-sm text-[#c9b896] mb-1">PHONE</p>
+                  <a href="tel:+77074227482" className="text-base hover:text-[#c9b896] transition-colors">
+                    +7 707 422 7482
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* India Branch */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-[#2a2a2a] p-8 rounded-lg border border-[#c9b896]/20"
+            >
+              <div className="mb-6">
+                <h3 className="text-2xl font-serif text-[#c9b896] mb-2">India Branch</h3>
+                <div className="w-12 h-[1px] bg-[#c9b896]/50"></div>
+              </div>
+              
+              <div className="space-y-3 text-[#e8e6e1]">
+                <p className="text-lg font-medium text-[#c9b896] mb-2">
+                  Swami Medical Consultancy &<br />Tourism Expert
+                </p>
+                <p className="text-base leading-relaxed">
+                  Dr. Pratik Patel (MD DGO)<br />
+                  Rinku Patel<br />
+                  Nr. Navjivan Hospital<br />
+                  Kalal Darwaja, Godhra<br />
+                  Gujarat, 389001
+                </p>
+                <div className="pt-4 border-t border-[#c9b896]/20">
+                  <p className="text-sm text-[#c9b896] mb-1">PHONE</p>
+                  <a href="tel:+916354043635" className="text-base hover:text-[#c9b896] transition-colors">
+                    +91 635 404 3635
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

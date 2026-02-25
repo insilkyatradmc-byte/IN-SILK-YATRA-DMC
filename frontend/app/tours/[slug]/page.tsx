@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import { getImageUrl } from '@/lib/images'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
+import ReviewsSection from '@/components/common/ReviewsSection'
 
 
 interface Tour {
@@ -235,6 +236,15 @@ export default function TourDetailPage() {
                 </motion.div>
               )}
             </div>
+
+            {/* Reviews Section */}
+            {tour && (
+              <ReviewsSection
+                type="tour"
+                entityId={tour.id}
+                entityName={tour.title}
+              />
+            )}
           </div>
 
           {/* Sticky Sidebar */}
@@ -296,8 +306,8 @@ export default function TourDetailPage() {
                 <a href="tel:+77074227482" className="text-white hover:text-[#c9b896] font-medium block font-sans">
                   +7 707 422 7482
                 </a>
-                <a href="mailto:info@insilkyatra.com" className="text-white hover:text-[#c9b896] font-medium block mt-1 font-sans">
-                  info@insilkyatra.com
+                <a href="mailto:insilkyatradmc@gmail.com" className="text-white hover:text-[#c9b896] font-medium block mt-1 font-sans">
+                  insilkyatradmc@gmail.com
                 </a>
               </div>
             </div>

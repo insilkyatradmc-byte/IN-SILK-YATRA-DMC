@@ -1,30 +1,52 @@
 'use client'
 
+import React from 'react'
+import dynamic from 'next/dynamic'
 import ScrollReveal from '@/components/about/ScrollReveal'
 import SplitImageWithOverlay from '@/components/about/SplitImageWithOverlay'
+import CEOSection from '@/components/about/CEOSection'
 import BackgroundImageSection from '@/components/about/BackgroundImageSection'
 import LargeTextAnimation from '@/components/about/LargeTextAnimation'
-import MarqueeWithImage from '@/components/about/MarqueeWithImage'
+import { ArcGalleryHero } from '@/components/ui/arc-gallery-hero'
 
-export default function AboutPage() {
+const DestinationsGallery = dynamic(() => import('@/components/home/DestinationsGallery'), {
+  loading: () => <div className="min-h-screen bg-black" />
+})
+
+function AboutPage() {
+  const travelImages = [
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595975/some-autumn-views-of-almaty-city-v0-9j3t78sn981e1_igfg1q.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595509/Alpine_meadows_and_snow-covered_peaks_in_Khan_Tengri_Nature_Park__Tien_Shan_1_fekbui.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595311/kolsay-lake-1-credit-to-rachita-saxena_bfefxq.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595312/visitalmatykz-visitalmaty-3457149_e5xwdy.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515856/milapom-kazakhstan-5434504_qa8ien.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771515855/andy_bay-canyon-1740973_refb2k.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1770901827/ira_b-mountains-4895894_i4qa2r.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1770901572/tom_aaa-kazakhstan-2726987_anijc6.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1770881292/andy_bay-mountains-8446221_ihswhz.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1770881291/bahonya-buildings-6282097_thp5xq.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771664152/insilk_yatra/destinations/rcaemudbjocefft28tto.jpg',
+    'https://res.cloudinary.com/dzbk92wsh/image/upload/v1771663891/insilk_yatra/destinations/mekas76fngagf661ph9f.jpg',
+  ]
+
   return (
     <div className="bg-[#e8e6e1] overflow-hidden">
-      {/* Scrolling Marquee with Image Animation */}
-      <MarqueeWithImage
-        text="ABOUT IN-SILK YATRA DMC"
-        imageSrc="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770887096/thephilippena-mosque-331116_vuxklb.jpg"
-        imageAlt="Kazakhstan Mosque"
-        speed={50}
+      <ArcGalleryHero 
+        images={travelImages}
+        title="ABOUT IN-SILK YATRA DMC"
+        subtitle="Crafting authentic journeys across Central Asia — where every path tells a story and every moment becomes a memory"
       />
 
-      {/* Split Image with Overlay - A SHARED STORY */}
       <SplitImageWithOverlay
-        leftSrc="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770882318/konevi-cami-5103317_xpw4di.jpg"
-        rightSrc="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770882319/konevi-cami-5103317_1_qcpnkc.jpg"
+        leftSrc="https://res.cloudinary.com/dzbk92wsh/image/upload/v1772006121/row-1-column-1_1_l7urgj.jpg"
+        rightSrc="https://res.cloudinary.com/dzbk92wsh/image/upload/v1772006132/row-1-column-2_mbvhqu.jpg"
         alt="Central Asian Art and Culture"
       />
 
-      {/* WHERE IT ALL BEGAN - Background Image Section */}
+      <CEOSection />
+
+      <DestinationsGallery />
+
       <BackgroundImageSection
         src="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770881292/andy_bay-mountains-8446221_ihswhz.jpg"
         alt="Kazakhstan Landscape"
@@ -36,7 +58,6 @@ export default function AboutPage() {
         ]}
       />
 
-      {/* Where It All Starts Section */}
       <section className="min-h-screen bg-black text-white flex items-center justify-center px-8 py-20">
         <div className="max-w-6xl w-full">
           <ScrollReveal direction="up">
@@ -83,7 +104,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Kazakhstan Awaits Section */}
       <section className="min-h-screen bg-black text-white flex items-center justify-center relative overflow-hidden py-20">
         <div className="max-w-6xl w-full px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -112,7 +132,6 @@ export default function AboutPage() {
             </div>
           </div>
 
-          {/* Large Text Animations */}
           <div className="relative mt-32 mb-20">
             <LargeTextAnimation text="IN-SILK" direction="left" delay={0} />
             <div className="mt-4">
@@ -122,7 +141,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Two Images Side by Side Section */}
       <section className="min-h-screen bg-[#e8e0d5] px-8 py-20">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8">
@@ -157,7 +175,7 @@ export default function AboutPage() {
             <ScrollReveal direction="up" delay={0.4}>
               <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
                 IN-SILK YATRA DMC specializes in crafting bespoke travel experiences across Kazakhstan 
-                and Central Asia. We don't just show you destinations—we help you discover the soul 
+                and Central Asia. We don&apos;t just show you destinations—we help you discover the soul 
                 of the Silk Road, one meaningful moment at a time.
               </p>
             </ScrollReveal>
@@ -167,3 +185,5 @@ export default function AboutPage() {
     </div>
   )
 }
+
+export default AboutPage

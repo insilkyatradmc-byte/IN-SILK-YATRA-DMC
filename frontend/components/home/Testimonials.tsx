@@ -11,6 +11,7 @@ interface Testimonial {
   content: string
   photo: string | null
   country: string | null
+  gallery_photos?: string[] | null // New field for additional photos
 }
 
 const Testimonials = memo(function Testimonials() {

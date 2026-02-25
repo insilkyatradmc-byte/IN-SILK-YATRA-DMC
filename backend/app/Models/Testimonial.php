@@ -15,12 +15,11 @@ class Testimonial extends Model
         'country',
         'content',
         'is_active',
+        'gallery_photos',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'is_active' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+        'gallery_photos' => 'array',
+    ];
 }

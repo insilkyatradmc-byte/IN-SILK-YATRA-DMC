@@ -176,3 +176,33 @@ export const contactAPI = {
 export const inquiryFormSettingsAPI = {
   getAll: () => api.get('/inquiry-form-settings'),
 }
+
+// Reviews API
+export const reviewsAPI = {
+  // Get reviews with filters
+  getAll: (params?: { type?: string; id?: number; per_page?: number }) =>
+    api.get('/reviews', { params }),
+  
+  // Get review statistics for an entity
+  getStatistics: (type: 'tour' | 'destination', id: number) =>
+    api.get('/reviews/statistics', { params: { type, id } }),
+  
+  // Submit a new review
+  create: (formData: FormData) =>
+    api.post('/reviews', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }),
+  
+  // Get user's own reviews
+  getMyReviews: () => api.get('/my-reviews'),
+}
+
+// User Profile API
+export const userProfileAPI = {
+  get: () => api.get('/profile'),
+  update: (formData: FormData) =>
+    api.put('/profile', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }),
+  deletePhoto: () => api.delete('/profile/photo'),
+}

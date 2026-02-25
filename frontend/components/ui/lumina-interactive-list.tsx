@@ -84,9 +84,19 @@ export function Component() {
                 media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595509/Alpine_meadows_and_snow-covered_peaks_in_Khan_Tengri_Nature_Park__Tien_Shan_1_fekbui.jpg" 
             },
             { 
+                title: "Shymbulak", 
+                description: "A premier ski resort and mountain retreat with breathtaking alpine views.", 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1772005054/585f2efd-ee79-4d28-ad1d-a611470631fa_full-day-private-tour-in-medeu-ice-skating--shymbulak-ski-resort-xlarge_peatxb.jpg" 
+            },
+            { 
                 title: "Charyn Canyon", 
                 description: "A geological marvel carved by wind and time in the heart of the steppe.", 
-                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1771595312/visitalmatykz-visitalmaty-3457149_e5xwdy.jpg" 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1772005894/silkroad_shutterstock_1236828025_HR_aticzc.jpg" 
+            },
+            { 
+                title: "Kaindy Lake", 
+                description: "The eerie sunken forest rising from turquoise waters in Kolsai Lakes National Park.", 
+                media: "https://res.cloudinary.com/dzbk92wsh/image/upload/v1772004688/the-eerie-sunken-forest-of-kaindy-lake-rising-out-the-turquoise-water-at-kolsai-lakes-national-park-in-kazakhstan_i577ob.jpg" 
             },
             { 
                 title: "Kolsai Lake", 
@@ -172,7 +182,10 @@ export function Component() {
         };
 
         const splitText = (text: string) => {
-            return text.split('').map(char => `<span style="display: inline-block; opacity: 0;">${char === ' ' ? '&nbsp;' : char}</span>`).join('');
+            // Split by words - each word appears as a whole unit
+            return text.split(' ').map(word => 
+                `<span style="display: inline-block; opacity: 0; white-space: nowrap;">${word}</span>`
+            ).join('<span style="display: inline-block;">&nbsp;</span>');
         };
 
         const updateContent = (idx: number) => {
@@ -298,7 +311,25 @@ export function Component() {
             });
         };
 
-        const updateNavigationState = (idx: number) => document.querySelectorAll(".slide-nav-item").forEach((el, i) => el.classList.toggle("active", i === idx));
+        const updateNavigationState = (idx: number) => {
+            document.querySelectorAll(".slide-nav-item").forEach((el, i) => el.classList.toggle("active", i === idx));
+            scrollNavigationToActive(idx);
+        };
+        
+        const scrollNavigationToActive = (idx: number) => {
+            const nav = document.getElementById("slidesNav");
+            const activeItem = document.querySelectorAll(".slide-nav-item")[idx] as HTMLElement;
+            if (nav && activeItem) {
+                const navWidth = nav.offsetWidth;
+                const itemLeft = activeItem.offsetLeft;
+                const itemWidth = activeItem.offsetWidth;
+                const scrollPosition = itemLeft - (navWidth / 2) + (itemWidth / 2);
+                nav.scrollTo({
+                    left: scrollPosition,
+                    behavior: 'smooth'
+                });
+            }
+        };
         const updateSlideProgress = (idx: number, prog: number) => { const el = document.querySelectorAll(".slide-nav-item")[idx]?.querySelector(".slide-progress-fill") as HTMLElement; if (el) { el.style.width = `${prog}%`; el.style.opacity = '1'; } };
         const fadeSlideProgress = (idx: number) => { const el = document.querySelectorAll(".slide-nav-item")[idx]?.querySelector(".slide-progress-fill") as HTMLElement; if (el) { el.style.opacity = '0'; setTimeout(() => el.style.width = "0%", 300); } };
         const quickResetProgress = (idx: number) => { const el = document.querySelectorAll(".slide-nav-item")[idx]?.querySelector(".slide-progress-fill") as HTMLElement; if (el) { el.style.transition = "width 0.2s ease-out"; el.style.width = "0%"; setTimeout(() => el.style.transition = "width 0.1s ease, opacity 0.3s ease", 200); } };

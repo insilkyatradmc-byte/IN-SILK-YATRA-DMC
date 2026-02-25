@@ -7,8 +7,14 @@ import Hero from '@/components/home/Hero'
 const PhilosophySection = dynamic(() => import('@/components/home/PhilosophySection'), {
   loading: () => <div className="min-h-screen bg-black" />
 })
-const CinematicTransition = dynamic(() => import('@/components/home/CinematicTransition'), {
+const DestinationsShowcase = dynamic(() => import('@/components/home/DestinationsShowcase'), {
   loading: () => <div className="min-h-[40vh] bg-black" />
+})
+const WhyChooseUs = dynamic(() => import('@/components/home/WhyChooseUs'), {
+  loading: () => <div className="min-h-[40vh] bg-black" />
+})
+const KineticScrollGallery = dynamic(() => import('@/components/ui/kinetic-scroll-gallery'), {
+  loading: () => <div className="min-h-screen bg-black" />
 })
 const BoutiqueSilkRoadHotelsSection = dynamic(() => import('@/components/home/BoutiqueSilkRoadHotelsSection'), {
   loading: () => <div className="min-h-screen bg-black" />
@@ -25,7 +31,9 @@ export default function Home() {
     <div>
       <Hero />
       <PhilosophySection />
-      <CinematicTransition />
+      <DestinationsShowcase />
+      <WhyChooseUs />
+      <KineticScrollGallery />
       <BoutiqueSilkRoadHotelsSection />
       <LuminaSection />
       <Testimonials />

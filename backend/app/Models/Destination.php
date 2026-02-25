@@ -29,5 +29,25 @@ class Destination extends Model
     {
         return $this->hasMany(Tour::class);
     }
+
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    public function approvedReviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable')->where('status', 'approved');
+    }
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->approvedReviews()->avg('stars') ?? 0;
+    }
+
+    public function getReviewsCountAttribute()
+    {
+        return $this->approvedReviews()->count();
+    }
 }
 

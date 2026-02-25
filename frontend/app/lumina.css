@@ -153,14 +153,16 @@
   .slides-navigation {
     justify-content: flex-start;
     overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 2rem;
-    gap: 1.5rem; /* Tighter gap */
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    gap: 2rem; /* Space between items */
+    padding-left: calc(50vw - 70px); /* Center first item */
+    padding-right: calc(50vw - 70px); /* Center last item */
     
     /* Scroll Snapping for better UX */
     scroll-snap-type: x mandatory;
-    scroll-padding: 0 1.5rem;
+    scroll-padding: 0 calc(50vw - 70px);
+    scroll-behavior: smooth;
 
     /* Hide scrollbar */
     -ms-overflow-style: none; 
@@ -169,28 +171,37 @@
     /* Ensure touches pass through successfully */
     touch-action: pan-x;
   }
+  
+  .slides-navigation::-webkit-scrollbar {
+    display: none;
+  }
 
   .slide-nav-item {
-    scroll-snap-align: start;
+    scroll-snap-align: center;
     min-width: 140px; /* Wider hit area for text */
-    opacity: 0.6; /* Higher idle opacity for visibility */
+    flex-shrink: 0;
+    opacity: 0.5; /* Higher idle opacity for visibility */
+    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .slide-nav-item.active {
     opacity: 1;
-    transform: scale(1.05); /* Subtle pop for active item */
+    transform: scale(1.1); /* Subtle pop for active item */
   }
   
   .slide-nav-title {
     font-size: 0.85rem; /* Larger text for readability */
     letter-spacing: 0.1em; /* Reduce spacing slightly to fit more */
+    white-space: nowrap;
   }
 
   .slide-title {
     font-size: clamp(2.5rem, 12vw, 4rem); /* Smaller on mobile but still big */
-    line-height: 1.1;
+    line-height: 1.2;
     margin-bottom: 1rem;
     padding: 0 1rem; /* Prevent edge touching */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .slide-description {

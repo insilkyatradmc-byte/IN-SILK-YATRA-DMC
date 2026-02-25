@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { getImageUrl } from '@/lib/images'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
+import ReviewsSection from '@/components/common/ReviewsSection'
 
 // Helper for image URLs
 // const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
@@ -176,6 +177,17 @@ export default function DestinationDetailPage() {
                     Contact us specifically for a custom inquiry
                   </Link>
                 </div>
+              )}
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mt-20">
+              {destination && (
+                <ReviewsSection
+                  type="destination"
+                  entityId={destination.id}
+                  entityName={destination.name}
+                />
               )}
             </div>
           </div>

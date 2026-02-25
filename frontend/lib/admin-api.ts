@@ -22,9 +22,10 @@ adminApi.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
     
-    // Auto-handle FormData content type
+    // Auto-handle FormData content type and increase timeout
     if (config.data instanceof FormData) {
       config.headers['Content-Type'] = 'multipart/form-data'
+      config.timeout = 60000 // 60 seconds for file uploads
     }
     return config
   },
@@ -37,6 +38,16 @@ adminApi.interceptors.request.use(
 adminApi.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('Admin API Error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message,
+      config: {
+        url: error.config?.url,
+        method: error.config?.method
+      }
+    })
+    
     if (error.response?.status === 401) {
       // Clear admin token and redirect to admin login
       Cookies.remove('admin_token')
@@ -115,4 +126,28 @@ export const adminInquiryFormSettingsAPI = {
   update: (id: number, data: { label?: string; options?: string[]; is_active?: boolean; sort_order?: number }) =>
     adminApi.put(`/inquiry-form-settings/${id}`, data),
   delete: (id: number) => adminApi.delete(`/inquiry-form-settings/${id}`),
+}
+
+// Admin Journey Photos API
+export const adminJourneyPhotosAPI = {
+  getAll: () => adminApi.get('/journey-photos'),
+  getById: (id: number) => adminApi.get(`/journey-photos/${id}`),
+  create: (data: FormData) => adminApi.post('/journey-photos', data),
+  update: (id: number, data: FormData) => adminApi.post(`/journey-photos/${id}`, data),
+  delete: (id: number) => adminApi.delete(`/journey-photos/${id}`),
+  reorder: (photos: { id: number; display_order: number }[]) => 
+    adminApi.post('/journey-photos/reorder', { photos }),
+}
+
+// Admin Reviews API
+export const adminReviewsAPI = {
+  getAll: (params?: { status?: string; source?: string; type?: string; search?: string; per_page?: number }) =>
+    adminApi.get('/reviews', { params }),
+  getById: (id: number) => adminApi.get(`/reviews/${id}`),
+  getStatistics: () => adminApi.get('/reviews/statistics'),
+  create: (data: FormData) => adminApi.post('/reviews', data),
+  update: (id: number, data: FormData) => adminApi.post(`/reviews/${id}`, data),
+  delete: (id: number) => adminApi.delete(`/reviews/${id}`),
+  approve: (id: number) => adminApi.post(`/reviews/${id}/approve`),
+  reject: (id: number) => adminApi.post(`/reviews/${id}/reject`),
 }

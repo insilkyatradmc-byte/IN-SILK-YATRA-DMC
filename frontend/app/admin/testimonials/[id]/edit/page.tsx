@@ -22,6 +22,8 @@ export default function EditTestimonialPage() {
   const [initialLoading, setInitialLoading] = useState(true)
   const [photoPreview, setPhotoPreview] = useState<string | null>(null)
   const [existingPhoto, setExistingPhoto] = useState<string | null>(null)
+  const [existingGalleryPhotos, setExistingGalleryPhotos] = useState<string[]>([])
+  const [newGalleryPhotos, setNewGalleryPhotos] = useState<{ file: File; preview: string }[]>([])
   const [formData, setFormData] = useState({
     name: '',
     content: '',
@@ -56,6 +58,8 @@ export default function EditTestimonialPage() {
         is_active: testimonial.is_active,
       })
       setExistingPhoto(testimonial.photo || null)
+      const galleryPhotos = Array.isArray(testimonial.gallery_photos) ? testimonial.gallery_photos : []
+      setExistingGalleryPhotos(galleryPhotos)
     } catch (error) {
       toast.error('Failed to load testimonial')
       router.push('/admin/testimonials')
@@ -76,6 +80,26 @@ export default function EditTestimonialPage() {
     }
   }
 
+  const handleGalleryPhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || [])
+    const newPhotos = files.map(file => {
+      const preview = URL.createObjectURL(file)
+      return { file, preview }
+    })
+    setNewGalleryPhotos([...newGalleryPhotos, ...newPhotos])
+  }
+
+  const removeExistingGalleryPhoto = (index: number) => {
+    if (Array.isArray(existingGalleryPhotos)) {
+      setExistingGalleryPhotos(existingGalleryPhotos.filter((_, i) => i !== index))
+    }
+  }
+
+  const removeNewGalleryPhoto = (index: number) => {
+    URL.revokeObjectURL(newGalleryPhotos[index].preview)
+    setNewGalleryPhotos(newGalleryPhotos.filter((_, i) => i !== index))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -84,19 +108,58 @@ export default function EditTestimonialPage() {
       const submitData = new FormData()
       submitData.append('name', formData.name.trim())
       submitData.append('content', formData.content.trim())
-      submitData.append('country', formData.country.trim())
+      
+      // Only append country if it has a value
+      const countryValue = formData.country.trim()
+      if (countryValue) {
+        submitData.append('country', countryValue)
+      }
       
       if (formData.photo) {
         submitData.append('photo', formData.photo)
       }
       
+      // Only send existing gallery photos if there are any
+      const validExistingPhotos = Array.isArray(existingGalleryPhotos) 
+        ? existingGalleryPhotos.filter(photo => photo && photo.trim()) 
+        : []
+      validExistingPhotos.forEach((photo) => {
+        submitData.append('existing_gallery_photos[]', photo)
+      })
+      
+      // Only send new gallery photos if there are any
+      if (Array.isArray(newGalleryPhotos)) {
+        newGalleryPhotos.forEach((photo) => {
+          submitData.append('gallery_photos[]', photo.file)
+        })
+      }
+      
       submitData.append('is_active', formData.is_active ? '1' : '0')
 
-      await adminTestimonialsAPI.update(testimonialId, submitData)
+      // Debug log - show FormData contents
+      console.log('FormData contents:')
+      for (let pair of submitData.entries()) {
+        console.log(pair[0] + ':', pair[1])
+      }
+      
+      console.log('Submitting testimonial update:', {
+        name: formData.name,
+        existingGalleryCount: Array.isArray(existingGalleryPhotos) ? existingGalleryPhotos.length : 0,
+        newGalleryCount: Array.isArray(newGalleryPhotos) ? newGalleryPhotos.length : 0,
+        testimonialId: testimonialId
+      })
+
+      const response = await adminTestimonialsAPI.update(testimonialId, submitData)
+      console.log('Update Response:', response)
       toast.success('Testimonial updated successfully!')
       router.push('/admin/testimonials')
     } catch (error: any) {
-      toast.error(getApiErrorMessage(error, 'Failed to update testimonial'))
+      console.error('Update Error Full:', error)
+      console.error('Update Error Response:', error.response)
+      console.error('Update Error Data:', error.response?.data)
+      const errorMsg = getApiErrorMessage(error, 'Failed to update testimonial')
+      console.error('Error Message:', errorMsg)
+      toast.error(errorMsg)
     } finally {
       setLoading(false)
     }
@@ -196,6 +259,68 @@ export default function EditTestimonialPage() {
               onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Gallery Photos (Optional)
+            </label>
+            
+            {Array.isArray(existingGalleryPhotos) && existingGalleryPhotos.length > 0 && (
+              <div className="mb-4">
+                <p className="text-sm text-gray-500 mb-2">Current Gallery Photos:</p>
+                <div className="grid grid-cols-3 gap-4">
+                  {existingGalleryPhotos.map((photo, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={photo}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeExistingGalleryPhoto(index)}
+                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleGalleryPhotosChange}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+            
+            {Array.isArray(newGalleryPhotos) && newGalleryPhotos.length > 0 && (
+              <div className="mt-4">
+                <p className="text-sm text-gray-500 mb-2">New Gallery Photos:</p>
+                <div className="grid grid-cols-3 gap-4">
+                  {newGalleryPhotos.map((photo, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={photo.preview}
+                        alt={`New ${index + 1}`}
+                        className="w-full h-24 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeNewGalleryPhoto(index)}
+                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div>

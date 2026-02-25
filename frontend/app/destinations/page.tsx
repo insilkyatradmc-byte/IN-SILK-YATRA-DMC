@@ -6,6 +6,7 @@ import { motion, useInView } from 'framer-motion'
 import { destinationsAPI } from '@/lib/api'
 import { getImageUrl } from '@/lib/images'
 import { DestinationCardSkeleton } from '@/components/common/SkeletonCard'
+import WhyChooseUs from '@/components/home/WhyChooseUs'
 
 interface Destination {
   id: number
@@ -16,34 +17,44 @@ interface Destination {
   country: string
 }
 
-// Destination Card Component
-function DestinationCard({ destination, index }: { destination: Destination; index: number }) {
+// Destination Card Component with Mixed Grid support
+function DestinationCard({ destination, index, gridSize }: { destination: Destination; index: number; gridSize?: 'large' | 'medium' | 'small' }) {
   const cardRef = useRef(null)
-  const isInView = useInView(cardRef, { once: true, amount: 0.3 })
+  const isInView = useInView(cardRef, { once: true, amount: 0.2 })
   const [isHovered, setIsHovered] = useState(false)
   
   const imageUrl = getImageUrl(destination.image, destination.name)
+
+  // Determine height based on grid size
+  const heightClass = gridSize === 'large' 
+    ? 'h-[500px] md:h-[600px]' 
+    : gridSize === 'medium'
+    ? 'h-[400px] md:h-[500px]'
+    : 'h-[350px] md:h-[450px]'
 
   return (
     <motion.div
       ref={cardRef}
       initial={{ opacity: 0, y: 30 }}
       animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.05, 0.3), ease: 'easeOut' }}
+      transition={{ duration: 0.5, delay: Math.min(index * 0.08, 0.4), ease: 'easeOut' }}
+      className="h-full"
     >
       <Link
         href={`/destinations/${destination.slug}`}
-        className="group block relative overflow-hidden"
+        className="group block relative overflow-hidden rounded-2xl h-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         prefetch={true}
       >
-        <div className="relative aspect-[3/4] overflow-hidden bg-gray-900">
-          {/* Image */}
+        <div className={`relative ${heightClass} overflow-hidden bg-gray-900`}>
+          {/* Image with Enlarge Effect */}
           <motion.div
-            className="absolute inset-0"
-            animate={{ scale: isHovered ? 1.08 : 1 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="absolute inset-[-10%]"
+            animate={{ 
+              scale: isHovered ? 1.15 : 1,
+            }}
+            transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
           >
             <img
               src={imageUrl}
@@ -53,43 +64,53 @@ function DestinationCard({ destination, index }: { destination: Destination; ind
             />
           </motion.div>
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-70" />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-          {/* Content */}
-          <div className="absolute inset-0 p-8 flex flex-col justify-end">
-            <div className="transition-transform duration-300 ease-out" style={{ transform: isHovered ? 'translateX(10px)' : 'translateX(0)' }}>
-              {/* Country Tag */}
-              <div className="inline-block mb-4">
-                <span className="text-xs tracking-[0.3em] text-white/70 uppercase font-mono">
-                  {destination.country}
-                </span>
-              </div>
-
+          {/* Content - Always Visible */}
+          <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-end">
+            <motion.div
+              animate={{ 
+                y: isHovered ? -10 : 0,
+              }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+            >
               {/* Destination Name */}
-              <h3 className="text-3xl md:text-4xl font-serif text-white mb-3 leading-tight">
+              <h3 className={`font-serif text-white mb-4 leading-tight ${
+                gridSize === 'large' ? 'text-4xl md:text-5xl' : 'text-2xl md:text-3xl'
+              }`}>
                 {destination.name}
               </h3>
 
-              {/* Description */}
-              <p className="text-white/80 text-sm leading-relaxed line-clamp-2 mb-6 transition-opacity duration-300" style={{ opacity: isHovered ? 1 : 0.7 }}>
-                {destination.description}
-              </p>
-
-              {/* Explore Link */}
-              <div className="flex items-center gap-3">
-                <span className="text-[#c9b896] text-sm tracking-[0.2em] uppercase font-medium">
-                  Explore
-                </span>
-                <div className="h-px bg-[#c9b896] transition-all duration-300" style={{ width: isHovered ? '80px' : '48px' }} />
-              </div>
-            </div>
+              {/* Request Button - Shows on Hover */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ 
+                  opacity: isHovered ? 1 : 0,
+                  y: isHovered ? 0 : 10
+                }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <div className="inline-flex items-center gap-3 px-6 py-3 bg-[#c9b896] hover:bg-[#d4c4a8] text-black font-medium text-sm rounded-full transition-colors duration-300">
+                  <span className="tracking-[0.1em] uppercase">Request a Tour</span>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  </svg>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
 
-          {/* Corner Accent */}
-          {isHovered && (
-            <div className="absolute top-0 right-0 w-24 h-24 border-t-2 border-r-2 border-[#c9b896]/30 animate-in fade-in duration-300" />
-          )}
+          {/* Corner Brackets on Hover */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute inset-0 pointer-events-none"
+          >
+            <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-white/30" />
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-white/30" />
+          </motion.div>
         </div>
       </Link>
     </motion.div>
@@ -212,28 +233,62 @@ export default function DestinationsPage() {
         </div>
       </section>
 
-      {/* Destinations Grid */}
+      {/* Destinations Grid - Mixed Layout */}
       <section className="py-20 md:py-32 px-6">
         <div className="max-w-7xl mx-auto">
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[...Array(6)].map((_, i) => (
                 <DestinationCardSkeleton key={i} />
               ))}
             </div>
           ) : filteredDestinations.length > 0 ? (
-            <motion.div
-              layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-            >
-              {filteredDestinations.map((destination, index) => (
-                <DestinationCard
-                  key={destination.id}
-                  destination={destination}
-                  index={index}
-                />
-              ))}
-            </motion.div>
+            <div className="relative">
+              <motion.div
+                layout
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {filteredDestinations.map((destination, index) => {
+                  // 2 cards per row: Row 1: [Wide, Small], Row 2: [Small, Wide], repeat
+                  let gridClass = 'col-span-1'
+                  let gridSize: 'large' | 'medium' | 'small' = 'small'
+                  
+                  const positionInRow = index % 2  // 2 items per row (0, 1)
+                  const rowNumber = Math.floor(index / 2)
+                  const isEvenRow = rowNumber % 2 === 0
+                  
+                  if (isEvenRow) {
+                    // Even rows: [Wide (2 cols), Small (1 col)]
+                    if (positionInRow === 0) {
+                      gridClass = 'md:col-span-2 lg:col-span-2'
+                      gridSize = 'large'
+                    } else {
+                      gridClass = 'md:col-span-1 lg:col-span-1'
+                      gridSize = 'small'
+                    }
+                  } else {
+                    // Odd rows: [Small (1 col), Wide (2 cols)]
+                    if (positionInRow === 0) {
+                      gridClass = 'md:col-span-1 lg:col-span-1'
+                      gridSize = 'small'
+                    } else {
+                      gridClass = 'md:col-span-2 lg:col-span-2'
+                      gridSize = 'large'
+                    }
+                  }
+                  
+                  return (
+                    <div key={destination.id} className={gridClass}>
+                      <DestinationCard
+                        destination={destination}
+                        index={index}
+                        gridSize={gridSize}
+                      />
+                    </div>
+                  )
+                })}
+              </motion.div>
+            </div>
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
@@ -247,6 +302,9 @@ export default function DestinationsPage() {
           )}
         </div>
       </section>
+
+      {/* Why Choose Us Section */}
+      <WhyChooseUs />
 
       {/* Bottom CTA Section */}
       <section className="relative py-32 overflow-hidden">

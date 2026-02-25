@@ -41,8 +41,9 @@ export default function AdminDestinationsPage() {
       await adminDestinationsAPI.delete(id)
       toast.success('Destination deleted successfully')
       loadDestinations()
-    } catch (error) {
-      toast.error('Failed to delete destination')
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || 'Failed to delete destination'
+      toast.error(errorMessage)
     }
   }
 

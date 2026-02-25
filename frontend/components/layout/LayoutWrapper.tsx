@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import FloatingWhatsAppButton from '@/components/common/FloatingWhatsAppButton'
+import FloatingEmailButton from '@/components/common/FloatingEmailButton'
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -17,6 +18,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       </main>
       {!isAdminRoute && <Footer />}
       {!isAdminRoute && <FloatingWhatsAppButton />}
+      {!isAdminRoute && <FloatingEmailButton />}
     </>
   )
 }

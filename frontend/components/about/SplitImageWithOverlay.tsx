@@ -17,11 +17,11 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
     offset: ['start start', 'end end'],
   })
 
-  // ── Timeline (160vh total) ────────────────────────────────────────
+  // ── Timeline (160vh total) for smooth animation ────────────────────
   // Scroll 0   : image fully visible, "A SHARED STORY" overlay visible
   // 0.00–0.72  : doors slide open immediately — pure horizontal, no Y
   // 0.60–0.80  : panels fade out as doors finish opening
-  // 0.78–1.00  : hidden text rises in
+  // 0.78–1.00  : background transitions to light
 
   // Image starts fully visible — no fade-in wait
   const imageOpacity = useTransform(scrollYProgress, [0.60, 0.80], [1, 0])
@@ -37,13 +37,9 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
   // "A SHARED STORY" fades out as split progresses
   const overlayOpacity = useTransform(scrollYProgress, [0, 0.30, 0.55], [1, 1, 0])
 
-  // Hidden text after doors open
-  const hiddenTextOpacity = useTransform(scrollYProgress, [0.78, 1.0], [0, 1])
-  const hiddenTextY       = useTransform(scrollYProgress, [0.78, 1.0], ['5%', '0%'])
-
   return (
-    <div ref={containerRef} className="relative h-[160vh] bg-black">
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+    <div ref={containerRef} className="relative h-[120vh] bg-black">
+      <motion.div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
 
         {/* Door panels */}
         <motion.div className="absolute inset-0 flex" style={{ opacity: imageOpacity }}>
@@ -73,20 +69,7 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
           </h2>
         </motion.div>
 
-        {/* Revealed text */}
-        <motion.div
-          className="absolute inset-0 flex flex-col items-center justify-center px-8 text-center pointer-events-none z-0"
-          style={{ opacity: hiddenTextOpacity, y: hiddenTextY }}
-        >
-          <h2 className="text-white text-[5vw] md:text-[4vw] font-light leading-tight tracking-wide mb-8">
-            A STORY PASSED<br />FROM ONE GENERATION<br />TO THE NEXT
-          </h2>
-          <p className="text-white text-lg md:text-xl max-w-2xl opacity-80">
-            This is where the story begins — and where it continues to breathe.
-          </p>
-        </motion.div>
-
-      </div>
+      </motion.div>
     </div>
   )
 }
