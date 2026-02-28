@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 
 export default function FloatingWhatsAppButton() {
-  const whatsappNumber = '77074227482' // Kazakhstan WhatsApp number
+  const whatsappNumber = '916354034635' // Company WhatsApp number
   const whatsappMessage = 'Hello! I would like to know more about your Silk Road tours.'
 
   const handleClick = () => {
