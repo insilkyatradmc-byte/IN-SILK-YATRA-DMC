@@ -25,8 +25,8 @@ export default function BackgroundImageSection({ src, alt, title, subtitle, para
     <div className="relative min-h-screen w-full flex items-center justify-center py-20 px-8 overflow-hidden bg-black">
       {/* Background Image */}
       <div className="absolute inset-0 z-0 flex items-center justify-center">
-        <div className="w-3/4 h-3/4 relative">
-          <img src={src} alt={alt} className="w-full h-full object-cover rounded-lg" />
+        <div className="w-full h-full md:w-3/4 md:h-3/4 relative">
+          <img src={src} alt={alt} className="w-full h-full object-cover md:rounded-lg" />
         </div>
         <div className="absolute inset-0 bg-black/60" />
       </div>

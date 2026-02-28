@@ -41,19 +41,19 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
     <div ref={containerRef} className="relative h-[120vh] bg-black">
       <motion.div className="sticky top-0 h-screen w-full overflow-hidden bg-black">
 
-        {/* Door panels */}
+        {/* Door panels - Both mobile and desktop */}
         <motion.div className="absolute inset-0 flex" style={{ opacity: imageOpacity }}>
           <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: leftX }}>
             <motion.img
               src={leftSrc} alt={alt}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-right"
               style={{ x: leftImgX }}
             />
           </motion.div>
           <motion.div className="relative w-1/2 h-full overflow-hidden" style={{ x: rightX }}>
             <motion.img
               src={rightSrc} alt={alt}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-left"
               style={{ x: rightImgX }}
             />
           </motion.div>
@@ -61,10 +61,10 @@ export default function SplitImageWithOverlay({ leftSrc, rightSrc, alt }: SplitI
 
         {/* "A SHARED STORY" overlay */}
         <motion.div
-          className="absolute inset-0 flex items-center justify-start px-12 md:px-20 pointer-events-none z-10"
+          className="absolute inset-0 flex items-center justify-start px-8 md:px-20 pointer-events-none z-10"
           style={{ opacity: overlayOpacity }}
         >
-          <h2 className="text-white text-[8vw] md:text-[7vw] font-light leading-tight tracking-wide">
+          <h2 className="text-white text-[10vw] md:text-[7vw] font-light leading-tight tracking-wide">
             A SHARED<br />STORY
           </h2>
         </motion.div>

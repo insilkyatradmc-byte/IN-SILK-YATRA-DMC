@@ -132,7 +132,7 @@ export default function ReviewForm({
               required
               value={formData.reviewer_name}
               onChange={(e) => setFormData(prev => ({ ...prev, reviewer_name: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900"
               placeholder="Enter your name"
             />
           </div>
@@ -146,7 +146,7 @@ export default function ReviewForm({
               type="email"
               value={formData.reviewer_email}
               onChange={(e) => setFormData(prev => ({ ...prev, reviewer_email: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900"
               placeholder="your.email@example.com"
             />
           </div>
@@ -160,7 +160,7 @@ export default function ReviewForm({
               type="file"
               accept="image/jpeg,image/png,image/jpg"
               onChange={(e) => setProfilePhoto(e.target.files?.[0] || null)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#c9b896]/10 file:text-[#c9b896] hover:file:bg-[#c9b896]/20 file:cursor-pointer"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#c9b896]/10 file:text-[#c9b896] hover:file:bg-[#c9b896]/20 file:cursor-pointer"
             />
           </div>
 
@@ -174,7 +174,7 @@ export default function ReviewForm({
               rows={6}
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all resize-none"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all resize-none text-gray-900"
               placeholder="Tell us about your experience... (minimum 10 characters)"
               minLength={10}
             />
