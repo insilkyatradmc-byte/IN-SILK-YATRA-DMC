@@ -1,9 +1,14 @@
 <?php
 
 return [
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*', 'admin/*', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'https://insilkyatradmc.com',
+        'https://www.insilkyatradmc.com',
+        'http://localhost:3000',
+        'http://localhost:3001',
+    ],
     'allowed_origins_patterns' => [],
     'allowed_headers' => ['*'],
     'exposed_headers' => [],

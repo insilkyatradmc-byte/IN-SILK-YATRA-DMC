@@ -19,6 +19,8 @@ import {
 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
+
 interface Review {
   id: number
   reviewer_name: string
@@ -256,7 +258,7 @@ export default function AdminReviewsPage() {
                         <div className="flex items-center gap-3">
                           {review.profile_photo ? (
                             <img
-                              src={`http://localhost:8000/${review.profile_photo}`}
+                              src={`${API_BASE}/${review.profile_photo}`}
                               alt={review.reviewer_name}
                               className="w-10 h-10 rounded-full object-cover border-2 border-gray-200"
                               onError={(e) => {
@@ -430,7 +432,7 @@ function ReviewDetailsModal({ review, onClose, onApprove, onReject, onDelete }: 
           <div className="flex items-center gap-4">
             {review.profile_photo ? (
               <img
-                src={`http://localhost:8000/${review.profile_photo}`}
+                src={`${API_BASE}/${review.profile_photo}`}
                 alt={review.reviewer_name}
                 className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                 onError={(e) => {

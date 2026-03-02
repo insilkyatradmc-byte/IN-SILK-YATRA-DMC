@@ -6,6 +6,8 @@ import StarRating from './StarRating'
 import { X } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 interface ReviewFormProps {
   type: 'tour' | 'destination'
   entityId: number
@@ -51,7 +53,7 @@ export default function ReviewForm({
         formDataToSend.append('profile_photo', profilePhoto)
       }
 
-      const response = await fetch('http://localhost:8000/api/reviews', {
+      const response = await fetch(`${API_URL}/reviews`, {
         method: 'POST',
         body: formDataToSend,
       })

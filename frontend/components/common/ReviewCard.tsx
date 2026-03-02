@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import StarRating from './StarRating'
 import { formatDistanceToNow } from 'date-fns'
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
+
 interface Review {
   id: number
   reviewer_name: string
@@ -50,7 +52,7 @@ export default function ReviewCard({ review, showStatus = false }: ReviewCardPro
         <div className="flex-shrink-0">
           {review.profile_photo ? (
             <img
-              src={`http://localhost:8000/${review.profile_photo}`}
+              src={`${API_BASE}/${review.profile_photo}`}
               alt={review.reviewer_name}
               className="w-12 h-12 rounded-full object-cover border-2 border-[#c9b896]"
               onError={(e) => {

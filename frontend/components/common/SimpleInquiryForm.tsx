@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { inquiryFormSettingsAPI } from '@/lib/api';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
 interface SimpleInquiryFormData {
   name: string;
   email: string;
@@ -94,7 +96,7 @@ export default function SimpleInquiryForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/leads', {
+      const response = await fetch(`${API_URL}/leads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
