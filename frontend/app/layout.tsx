@@ -54,12 +54,64 @@ export default function RootLayout({
           {children}
         </LayoutWrapper>
         <Toaster 
-          position="top-right"
+          position="top-center"
+          gutter={12}
+          containerStyle={{
+            top: 80,
+          }}
+          containerClassName="toast-container"
           toastOptions={{
-            duration: 3000,
+            duration: 4000,
+            className: 'font-light tracking-wide',
             style: {
-              background: '#363636',
-              color: '#fff',
+              background: 'linear-gradient(135deg, #1f2937 0%, #111827 100%)',
+              color: '#f9fafb',
+              padding: '16px 24px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(12px)',
+              fontFamily: 'var(--font-inter)',
+              fontSize: '15px',
+              fontWeight: '300',
+              letterSpacing: '0.01em',
+              maxWidth: '420px',
+              minHeight: '56px',
+            },
+            success: {
+              duration: 4000,
+              style: {
+                background: 'linear-gradient(135deg, #065f46 0%, #064e3b 100%)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#d1fae5',
+              },
+              iconTheme: {
+                primary: '#10b981',
+                secondary: '#d1fae5',
+              },
+            },
+            error: {
+              duration: 5000,
+              style: {
+                background: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#fee2e2',
+              },
+              iconTheme: {
+                primary: '#ef4444',
+                secondary: '#fee2e2',
+              },
+            },
+            loading: {
+              style: {
+                background: 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                color: '#dbeafe',
+              },
+              iconTheme: {
+                primary: '#3b82f6',
+                secondary: '#dbeafe',
+              },
             },
           }}
         />

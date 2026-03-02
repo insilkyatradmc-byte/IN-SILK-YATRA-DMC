@@ -85,7 +85,7 @@ export default function ReviewForm({
 
   return (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
       <motion.div
@@ -93,13 +93,13 @@ export default function ReviewForm({
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-[#e8e6e1] rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-gray-200 p-8 flex items-center justify-between z-10">
           <div>
-            <h2 className="text-2xl font-semibold text-gray-900">Write a Review</h2>
-            <p className="text-sm text-gray-600 mt-1">Share your experience with {entityName}</p>
+            <h2 className="font-serif text-3xl text-gray-900 font-light mb-2">Write a Review</h2>
+            <p className="text-sm text-gray-600 font-light">Share your experience with {entityName}</p>
           </div>
           <button
             onClick={onClose}
@@ -110,11 +110,11 @@ export default function ReviewForm({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-8 space-y-6 relative">
           {/* Rating */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-3">
-              Your Rating <span className="text-red-500">*</span>
+            <label className="block text-sm font-light text-gray-700 mb-3 tracking-wide">
+              Your Rating <span className="text-gray-900">*</span>
             </label>
             <StarRating
               rating={formData.stars}
@@ -126,81 +126,81 @@ export default function ReviewForm({
 
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Your Name <span className="text-red-500">*</span>
+            <label className="block text-sm font-light text-gray-700 mb-2 tracking-wide">
+              Your Name <span className="text-gray-900">*</span>
             </label>
             <input
               type="text"
               required
               value={formData.reviewer_name}
               onChange={(e) => setFormData(prev => ({ ...prev, reviewer_name: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900"
+              className="w-full px-5 py-3.5 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all text-gray-800 font-light"
               placeholder="Enter your name"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
+            <label className="block text-sm font-light text-gray-700 mb-2 tracking-wide">
               Email (Optional)
             </label>
             <input
               type="email"
               value={formData.reviewer_email}
               onChange={(e) => setFormData(prev => ({ ...prev, reviewer_email: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900"
+              className="w-full px-5 py-3.5 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all text-gray-800 font-light"
               placeholder="your.email@example.com"
             />
           </div>
 
           {/* Profile Photo */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
+            <label className="block text-sm font-light text-gray-700 mb-2 tracking-wide">
               Profile Photo (Optional)
             </label>
             <input
               type="file"
               accept="image/jpeg,image/png,image/jpg"
               onChange={(e) => setProfilePhoto(e.target.files?.[0] || null)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-[#c9b896]/10 file:text-[#c9b896] hover:file:bg-[#c9b896]/20 file:cursor-pointer"
+              className="w-full px-5 py-3.5 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all text-gray-800 font-light file:mr-4 file:py-2 file:px-5 file:rounded-full file:border-0 file:bg-gray-900 file:text-white hover:file:bg-gray-800 file:cursor-pointer file:font-light file:text-sm"
             />
           </div>
 
           {/* Review Message */}
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Your Review <span className="text-red-500">*</span>
+            <label className="block text-sm font-light text-gray-700 mb-2 tracking-wide">
+              Your Review <span className="text-gray-900">*</span>
             </label>
             <textarea
               required
               rows={6}
               value={formData.message}
               onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#c9b896] focus:border-transparent outline-none transition-all resize-none text-gray-900"
+              className="w-full px-5 py-3.5 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-gray-900 outline-none transition-all resize-none text-gray-800 font-light leading-relaxed"
               placeholder="Tell us about your experience... (minimum 10 characters)"
               minLength={10}
             />
           </div>
 
           {/* Submit Button */}
-          <div className="flex gap-3 pt-4">
+          <div className="flex gap-4 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-8 py-3.5 bg-white border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all font-light tracking-wide"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 px-6 py-3 bg-[#c9b896] text-white rounded-lg hover:bg-[#b8a886] transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-8 py-3.5 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-all font-light tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Review'}
             </button>
           </div>
 
-          <p className="text-xs text-gray-500 text-center pt-2">
+          <p className="text-xs text-gray-500 text-center pt-3 font-light">
             Your review will be published after admin approval
           </p>
         </form>

@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import StarRating from './StarRating'
 import { formatDistanceToNow } from 'date-fns'
 
@@ -41,20 +40,17 @@ export default function ReviewCard({ review, showStatus = false }: ReviewCardPro
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow"
-    >
-      <div className="flex items-start gap-4">
+    <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg p-8 hover:shadow-lg transition-all duration-300">
+      <div className="flex items-start gap-6">
         {/* Profile Photo/Avatar */}
         <div className="flex-shrink-0">
           {review.profile_photo ? (
             <img
               src={`${API_BASE}/${review.profile_photo}`}
               alt={review.reviewer_name}
-              className="w-12 h-12 rounded-full object-cover border-2 border-[#c9b896]"
+              loading="lazy"
+              decoding="async"
+              className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200"
               onError={(e) => {
                 // Fallback to initials if image fails to load
                 const target = e.target as HTMLImageElement;
@@ -63,40 +59,40 @@ export default function ReviewCard({ review, showStatus = false }: ReviewCardPro
               }}
             />
           ) : null}
-          <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-[#c9b896] to-[#a08968] flex items-center justify-center text-white font-semibold text-sm ${review.profile_photo ? 'hidden' : ''}`}>
+          <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white font-light text-lg ${review.profile_photo ? 'hidden' : ''}`}>
             {getInitials(review.reviewer_name)}
           </div>
         </div>
 
         {/* Review Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-4 mb-2">
+          <div className="flex items-start justify-between gap-4 mb-4">
             <div>
-              <h4 className="font-semibold text-gray-900">{review.reviewer_name}</h4>
-              <p className="text-sm text-gray-500">{getTimeAgo(review.created_at)}</p>
+              <h4 className="font-serif text-xl text-gray-900 mb-1">{review.reviewer_name}</h4>
+              <p className="text-sm text-gray-500 font-light">{getTimeAgo(review.created_at)}</p>
             </div>
             <StarRating rating={review.stars} size="sm" />
           </div>
 
-          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+          <p className="text-gray-700 leading-relaxed font-light text-base whitespace-pre-line">
             {review.message}
           </p>
 
           {showStatus && review.status === 'pending' && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-sm">
-              <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse"></div>
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 bg-amber-50 text-amber-700 rounded-full text-sm font-light">
+              <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse"></div>
               Pending Approval
             </div>
           )}
 
           {showStatus && review.status === 'approved' && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 rounded-full text-sm">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-light">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
               Approved
             </div>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   )
 }

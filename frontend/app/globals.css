@@ -224,4 +224,123 @@ img {
   backface-visibility: hidden;
 }
 
+/* Custom Toast Notifications */
+[data-sonner-toast] {
+  font-family: var(--font-inter) !important;
+}
+
+[data-sonner-toast][data-styled] {
+  padding: 0 !important;
+}
+
+/* Responsive toast container */
+.toast-container {
+  z-index: 9999 !important;
+}
+
+@media (max-width: 640px) {
+  .toast-container {
+    left: 12px !important;
+    right: 12px !important;
+    top: 20px !important;
+  }
+  
+  [data-hot-toast] {
+    max-width: 100% !important;
+    width: 100% !important;
+    font-size: 14px !important;
+    padding: 14px 20px !important;
+  }
+  
+  [data-hot-toast] > div:nth-child(2) {
+    padding-right: 28px !important;
+  }
+}
+
+/* Toast enter animation - smooth slide down */
+@keyframes toast-enter {
+  0% {
+    transform: translateY(-100%) scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Toast exit animation - smooth fade up */
+@keyframes toast-exit {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%) scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* Apply animations to react-hot-toast */
+[data-hot-toast] {
+  animation: toast-enter 0.35s cubic-bezier(0.21, 1.02, 0.73, 1) forwards;
+}
+
+[data-hot-toast][data-exiting] {
+  animation: toast-exit 0.4s cubic-bezier(0.06, 0.71, 0.55, 1) forwards;
+}
+
+/* Custom toast container hover effect */
+[data-hot-toast]:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 640px) {
+  [data-hot-toast]:hover {
+    transform: scale(1.01);
+  }
+}
+
+/* Custom close button styling */
+[data-hot-toast] button[aria-label="Close toast"] {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+[data-hot-toast] button[aria-label="Close toast"]:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Toast icon styling */
+[data-hot-toast] > div:first-child {
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+
+/* Toast message styling */
+[data-hot-toast] > div:nth-child(2) {
+  flex: 1;
+  line-height: 1.5;
+  padding-right: 32px;
+}
+
 @import './lumina.css';
