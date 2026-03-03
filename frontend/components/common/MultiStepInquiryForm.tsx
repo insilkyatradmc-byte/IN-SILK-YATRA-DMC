@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { inquiryFormSettingsAPI } from '@/lib/api';
+import { inquiryFormSettingsAPI, leadsAPI } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 interface InquiryFormData {
   // Step 1
@@ -175,48 +176,43 @@ export default function MultiStepInquiryForm({ isOpen, onClose }: MultiStepInqui
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('http://localhost:8000/api/leads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          country: formData.country,
-          feeling_description: formData.feelingDescription,
-          selected_destination: formData.selectedDestination,
-          travel_start_date: formData.travelStartDate,
-          travel_end_date: formData.travelEndDate,
-          dates_flexible: formData.datesFlexible,
-          travel_party: formData.travelParty,
-          adults_count: formData.adultsCount,
-          children_count: formData.childrenCount,
-          children_ages: formData.childrenAges,
-          budget_amount: formData.budgetAmount ? parseFloat(formData.budgetAmount) : null,
-          budget_currency: formData.budgetCurrency,
-          travel_vibes: formData.travelVibes,
-          special_occasions: formData.specialOccasions,
-          accommodation_type: formData.accommodationType,
-          private_tour_themes: formData.privateTourThemes,
-          experience_styles: formData.experienceStyles,
-          concierge_interests: formData.conciergeInterests,
-          transfers_drivers: formData.transfersDrivers,
-          additional_notes: formData.additionalNotes,
-          discovery_source: formData.discoverySource,
-        }),
+      // Format comprehensive message from all form data
+      const message = `
+Feeling: ${formData.feelingDescription}
+Destination: ${formData.selectedDestination}
+Travel Dates: ${formData.travelStartDate} to ${formData.travelEndDate}${formData.datesFlexible ? ' (Flexible)' : ''}
+Travel Party: ${formData.travelParty}
+Adults: ${formData.adultsCount}, Children: ${formData.childrenCount}${formData.childrenCount > 0 ? ` (Ages: ${formData.childrenAges.join(', ')})` : ''}
+Budget: ${formData.budgetAmount} ${formData.budgetCurrency}
+Travel Vibes: ${formData.travelVibes.join(', ')}
+Special Occasions: ${formData.specialOccasions.join(', ')}
+Accommodation: ${formData.accommodationType}
+Tour Themes: ${formData.privateTourThemes.join(', ')}
+Experience Styles: ${formData.experienceStyles.join(', ')}
+Concierge: ${formData.conciergeInterests.join(', ')}
+Transfers: ${formData.transfersDrivers.join(', ')}
+Country: ${formData.country}
+Additional Notes: ${formData.additionalNotes}
+Discovery: ${formData.discoverySource}
+      `.trim();
+
+      const response = await leadsAPI.create({
+        name: `${formData.name} ${formData.lastName}`.trim(),
+        email: formData.email,
+        phone: formData.phone,
+        message: message,
       });
 
-      if (response.ok) {
+      if (response.data.success) {
         setSubmitSuccess(true);
+        toast.success('Inquiry submitted successfully! Our team will contact you soon.');
       } else {
-        alert('Failed to submit inquiry. Please try again.');
+        toast.error('Failed to submit inquiry. Please try again.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting inquiry:', error);
-      alert('An error occurred. Please try again.');
+      const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

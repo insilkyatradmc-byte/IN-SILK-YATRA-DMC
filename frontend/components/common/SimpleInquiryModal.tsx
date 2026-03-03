@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { inquiryFormSettingsAPI } from '@/lib/api';
+import { inquiryFormSettingsAPI, leadsAPI } from '@/lib/api';
+import toast from 'react-hot-toast';
 
 interface SimpleInquiryFormData {
   name: string;
@@ -122,25 +123,16 @@ export default function SimpleInquiryModal({ isOpen, onClose }: SimpleInquiryMod
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:8000/api/leads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email || null,
-          phone: formData.phone,
-          travel_start_date: formData.travel_start_date,
-          adults_count: parseInt(formData.adults_count) || 1,
-          selected_destination: formData.selected_destination,
-        }),
+      const response = await leadsAPI.create({
+        name: formData.name,
+        email: formData.email || '',
+        phone: formData.phone,
+        message: `Travel Start Date: ${formData.travel_start_date}\nAdults: ${formData.adults_count || 1}\nDestination: ${formData.selected_destination}`,
       });
 
-      const data = await response.json();
-
-      if (response.ok && data.success) {
+      if (response.data.success) {
         setSubmitSuccess(true);
+        toast.success('Inquiry submitted successfully! We\'ll contact you soon.');
         // Reset form and close modal after 2 seconds
         setTimeout(() => {
           setFormData({
@@ -155,11 +147,12 @@ export default function SimpleInquiryModal({ isOpen, onClose }: SimpleInquiryMod
           onClose();
         }, 2000);
       } else {
-        alert('Failed to submit inquiry. Please try again.');
+        toast.error('Failed to submit inquiry. Please try again.');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting inquiry:', error);
-      alert('An error occurred. Please try again.');
+      const errorMessage = error.response?.data?.message || 'An error occurred. Please try again.';
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
