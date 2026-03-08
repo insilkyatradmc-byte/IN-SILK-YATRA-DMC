@@ -321,8 +321,8 @@ export default function ContactPage() {
                 </p>
                 <div className="pt-4 border-t border-[#c9b896]/20">
                   <p className="text-sm text-[#c9b896] mb-1">PHONE</p>
-                  <a href="tel:+916354034635" className="text-base hover:text-[#c9b896] transition-colors">
-                    +91 635 403 4635
+                  <a href="tel:+916354034645" className="text-base hover:text-[#c9b896] transition-colors">
+                    +91 635 403 4645
                   </a>
                 </div>
               </div>

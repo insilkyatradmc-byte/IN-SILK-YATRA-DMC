@@ -1,5 +1,5 @@
 export default function WhatsAppCTA() {
-  const whatsappNumber = '916354034635' // Company WhatsApp number
+  const whatsappNumber = '916354034645' // Company WhatsApp number
   const message = encodeURIComponent('Hello! I would like to know more about your tours.')
 
   return (

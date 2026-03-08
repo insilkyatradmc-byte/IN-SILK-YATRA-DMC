@@ -3,19 +3,23 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { useShouldReduceMotion } from '@/lib/performance-hooks'
+import Image from 'next/image'
 
 export default function CEOSection() {
   const ref = useRef(null)
   const containerRef = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.2 })
+  const shouldReduceMotion = useShouldReduceMotion()
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start end', 'end start']
   })
   
-  const imageY = useTransform(scrollYProgress, [0, 1], [100, -100])
-  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.05, 0.95])
+  // Disable parallax on mobile for performance
+  const imageY = shouldReduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [100, -100])
+  const imageScale = shouldReduceMotion ? 1 : useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.05, 0.95])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -101,11 +105,13 @@ export default function CEOSection() {
               <motion.div 
                 className="relative aspect-[4/5] rounded-2xl overflow-hidden border-2 border-[#c9b896]/30"
               >
-                <img
+                <Image
                   src="https://res.cloudinary.com/dzbk92wsh/image/upload/v1772005762/FC0A8087.JPG_eawuwa.jpg"
                   alt="Rakesh Yadav - CEO"
-                  className="w-full h-full object-cover object-center"
-                  loading="eager"
+                  fill
+                  className="object-cover object-center"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </motion.div>
 
@@ -130,8 +136,10 @@ export default function CEOSection() {
               <motion.h2 
                 className="text-5xl sm:text-6xl md:text-7xl font-light text-white tracking-tight"
                 style={{ fontFamily: 'Georgia, serif' }}
-                whileHover={{ x: 10 }}
-                transition={{ type: "spring", stiffness: 300 }}
+                {...(!shouldReduceMotion && {
+                  whileHover: { x: 10 },
+                  transition: { type: "spring", stiffness: 300 }
+                })}
               >
                 Namaste
               </motion.h2>
@@ -177,7 +185,9 @@ export default function CEOSection() {
                     variants={specialtyVariants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
-                    whileHover={{ x: 5, backgroundColor: 'rgba(201, 184, 150, 0.1)' }}
+                    {...(!shouldReduceMotion && {
+                      whileHover: { x: 5, backgroundColor: 'rgba(201, 184, 150, 0.1)' }
+                    })}
                     className="flex items-center gap-3 p-3 rounded-lg border border-white/10 backdrop-blur-sm transition-all duration-300"
                   >
                     <div className="w-1.5 h-1.5 bg-[#c9b896] rounded-full" />
@@ -197,8 +207,10 @@ export default function CEOSection() {
               </p>
               <motion.div 
                 className="inline-block"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 400 }}
+                {...(!shouldReduceMotion && {
+                  whileHover: { scale: 1.05 },
+                  transition: { type: "spring", stiffness: 400 }
+                })}
               >
                 <p className="text-[#c9b896] font-semibold text-lg">
                   Travel Safe | Travel Smart

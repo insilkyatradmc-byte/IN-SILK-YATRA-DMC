@@ -2,6 +2,7 @@
 
 import StarRating from './StarRating'
 import { formatDistanceToNow } from 'date-fns'
+import Image from 'next/image'
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000'
 
@@ -43,21 +44,23 @@ export default function ReviewCard({ review, showStatus = false }: ReviewCardPro
     <div className="bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-lg p-8 hover:shadow-lg transition-all duration-300">
       <div className="flex items-start gap-6">
         {/* Profile Photo/Avatar */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 relative">
           {review.profile_photo ? (
-            <img
-              src={`${API_BASE}/${review.profile_photo}`}
-              alt={review.reviewer_name}
-              loading="lazy"
-              decoding="async"
-              className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200"
-              onError={(e) => {
-                // Fallback to initials if image fails to load
-                const target = e.target as HTMLImageElement;
-                target.style.display = 'none';
-                target.nextElementSibling?.classList.remove('hidden');
-              }}
-            />
+            <div className="relative w-16 h-16 rounded-full overflow-hidden ring-2 ring-gray-200">
+              <Image
+                src={`${API_BASE}/${review.profile_photo}`}
+                alt={review.reviewer_name}
+                fill
+                className="object-cover"
+                sizes="64px"
+                onError={(e) => {
+                  // Fallback to initials if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  target.parentElement?.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+            </div>
           ) : null}
           <div className={`w-16 h-16 rounded-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white font-light text-lg ${review.profile_photo ? 'hidden' : ''}`}>
             {getInitials(review.reviewer_name)}

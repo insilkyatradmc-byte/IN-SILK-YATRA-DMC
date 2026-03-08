@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function PhilosophySection() {
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -47,10 +48,13 @@ export default function PhilosophySection() {
               imageVisible ? 'translate-x-0' : '-translate-x-full'
             }`}
           >
-            <img
+            <Image
               src="https://res.cloudinary.com/dzbk92wsh/image/upload/v1770216435/visitalmatykz-visitalmaty-3457152_1920_vijloz.jpg"
               alt="Central Asian Landscape"
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
         </div>

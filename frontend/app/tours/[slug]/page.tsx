@@ -104,7 +104,7 @@ export default function TourDetailPage() {
 
   const handleWhatsApp = () => {
     // Ideally this comes from env or config
-    const whatsappNumber = '916354034635' // Company WhatsApp number
+    const whatsappNumber = '916354034645' // Company WhatsApp number
     const message = encodeURIComponent(
       `Hello In-Silk Yatra! I'm interested in booking the tour: "${tour?.title}". Could you please provide more details?`
     )
