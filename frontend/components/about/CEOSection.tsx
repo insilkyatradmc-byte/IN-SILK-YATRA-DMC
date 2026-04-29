@@ -17,9 +17,13 @@ export default function CEOSection() {
     offset: ['start end', 'end start']
   })
   
+  // Call hooks unconditionally
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [100, -100])
+  const parallaxScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.05, 0.95])
+
   // Disable parallax on mobile for performance
-  const imageY = shouldReduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [100, -100])
-  const imageScale = shouldReduceMotion ? 1 : useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1.05, 0.95])
+  const imageY = shouldReduceMotion ? 0 : parallaxY
+  const imageScale = shouldReduceMotion ? 1 : parallaxScale
 
   const containerVariants = {
     hidden: { opacity: 0 },
